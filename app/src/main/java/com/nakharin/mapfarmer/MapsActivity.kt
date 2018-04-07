@@ -77,6 +77,8 @@ class MapsActivity : AppCompatActivity() {
     private lateinit var arrLatLng: ArrayList<LatLng>
     private lateinit var arrAreaModel: ArrayList<AreaModel>
 
+    private var positonRemove: Int = -1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
@@ -96,6 +98,8 @@ class MapsActivity : AppCompatActivity() {
         fabDone.setOnClickListener(onClickListener)
 
         autocompleteFragment.setOnPlaceSelectedListener(onPlaceSelectionListener)
+
+        recyclerArea.addOnItemClickListener(onItemClickListener)
 
         mapFragment.getMapAsync(onMapReadyCallback)
     }
@@ -118,6 +122,7 @@ class MapsActivity : AppCompatActivity() {
         recyclerArea = findViewById(R.id.recyclerArea)
         linearLayoutManager = LinearLayoutManager(this)
         recyclerArea.layoutManager = linearLayoutManager
+
         imgCenterPoint = findViewById(R.id.imgCenterPoint)
 
         imgRemoveArea = findViewById(R.id.imgRemoveArea)
@@ -129,6 +134,8 @@ class MapsActivity : AppCompatActivity() {
 
         arrLatLng = ArrayList()
         arrAreaModel = ArrayList()
+
+        recyclerArea.adapter = RecyclerAreaAdapter(arrAreaModel)
     }
 
     private fun checkPermissionLocation() {
@@ -212,6 +219,11 @@ class MapsActivity : AppCompatActivity() {
         }
     }
 
+    private fun setNavigationGone() {
+        vNavigation.visibility = GONE
+        imgNavigation.setImageResource(R.mipmap.ic_next)
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
@@ -278,13 +290,19 @@ class MapsActivity : AppCompatActivity() {
         }
     }
 
+    private val onItemClickListener: RecyclerItemClickListener.OnClickListener = object : RecyclerItemClickListener.OnClickListener {
+        override fun onItemClick(position: Int, view: View) {
+            view.setBackgroundColor(view.resources.getColor(R.color.colorGray1))
+            positonRemove = position
+        }
+    }
+
     private val onClickListener = View.OnClickListener {
 
         if (it == imgNavigation) {
             val isShow = vNavigation.visibility
             if (isShow == VISIBLE) {
-                vNavigation.visibility = GONE
-                imgNavigation.setImageResource(R.mipmap.ic_next)
+                setNavigationGone()
             } else {
                 vNavigation.visibility = VISIBLE
                 imgNavigation.setImageResource(R.mipmap.ic_back)
@@ -306,7 +324,12 @@ class MapsActivity : AppCompatActivity() {
         }
 
         if (it == imgRemoveArea) {
-
+            if (positonRemove != -1) {
+                arrAreaModel[positonRemove].polygon.remove()
+                arrAreaModel.removeAt(positonRemove)
+                recyclerArea.adapter.notifyDataSetChanged()
+                positonRemove = -1
+            }
         }
 
         if (it == imgAddArea) {
@@ -315,8 +338,7 @@ class MapsActivity : AppCompatActivity() {
                 imgCenterPoint.visibility = VISIBLE
                 fabAdd.visibility = VISIBLE
                 fabDone.visibility = VISIBLE
-                vNavigation.visibility = GONE
-                imgNavigation.setImageResource(R.mipmap.ic_next)
+                setNavigationGone()
             }
         }
 
@@ -352,7 +374,7 @@ class MapsActivity : AppCompatActivity() {
                 val areaModel = AreaModel(getAddress(arrLatLng[0]), "" + shoelaceArea(polygon.points), polygon)
                 arrAreaModel.add(areaModel)
 
-                recyclerArea.adapter = RecyclerAreaAdapter(arrAreaModel)
+                recyclerArea.adapter.notifyDataSetChanged()
 
                 Handler().postDelayed({
                     arrLatLng.clear()
@@ -371,20 +393,18 @@ class MapsActivity : AppCompatActivity() {
         map.uiSettings.isZoomControlsEnabled = true
         map.mapType = GoogleMap.MAP_TYPE_NORMAL
 
-        map.setOnMapClickListener(onMapClickListener)
-        map.setOnPolygonClickListener(onPolygonClickListener)
-
         checkPermissionLocation()
     }
+}
 
-    private val onMapClickListener = GoogleMap.OnMapClickListener {
-        if (vNavigation.visibility == VISIBLE) {
-            vNavigation.visibility = GONE
-            imgNavigation.setImageResource(R.mipmap.ic_next)
-        }
-    }
+fun RecyclerView.addOnItemClickListener(listener: RecyclerItemClickListener.OnClickListener) {
+    this.addOnChildAttachStateChangeListener(RecyclerItemClickListener(this, listener, null))
+}
 
-    private val onPolygonClickListener = GoogleMap.OnPolygonClickListener {
-        //        it.remove()
-    }
+fun RecyclerView.addOnItemClickListener(listener: RecyclerItemClickListener.OnLongClickListener) {
+    this.addOnChildAttachStateChangeListener(RecyclerItemClickListener(this, null, listener))
+}
+
+fun RecyclerView.addOnItemClickListener(onClick: RecyclerItemClickListener.OnClickListener, onLongClick: RecyclerItemClickListener.OnLongClickListener) {
+    this.addOnChildAttachStateChangeListener(RecyclerItemClickListener(this, onClick, onLongClick))
 }

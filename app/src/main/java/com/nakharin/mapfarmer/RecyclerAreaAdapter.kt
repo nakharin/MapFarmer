@@ -38,6 +38,10 @@ class RecyclerAreaAdapter(private val areaList: ArrayList<AreaModel>) : Recycler
         holder.txtItemSubTitle.text = areaList[position].subTitle
 
         holder.imgItem.setOnClickListener(OnImageClickListener(holder, areaList[position].polygon))
+
+        holder.itemView.setOnClickListener {
+
+        }
     }
 
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
