@@ -36,10 +36,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CircleOptions
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolygonOptions
+import com.google.android.gms.maps.model.*
 import com.zqg.kotlin.LoadingDialog
 import java.io.IOException
 
@@ -157,8 +154,7 @@ class MapsActivity : AppCompatActivity() {
             if (location != null) {
                 lastLocation = location
                 val currentLatLng = LatLng(location.latitude, location.longitude)
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 18f))
             }
         }
     }
@@ -217,6 +213,15 @@ class MapsActivity : AppCompatActivity() {
         } catch (e: GooglePlayServicesNotAvailableException) {
             e.printStackTrace()
         }
+    }
+
+    fun getPolygonCenterPoint(latLngList: List<LatLng>) : LatLng {
+        val builder = LatLngBounds.builder()
+        for (latLng in latLngList) {
+            builder.include(latLng)
+        }
+        var bounds = builder.build()
+        return bounds.center
     }
 
     private fun setNavigationGone() {
@@ -292,7 +297,8 @@ class MapsActivity : AppCompatActivity() {
 
     private val onItemClickListener: RecyclerItemClickListener.OnClickListener = object : RecyclerItemClickListener.OnClickListener {
         override fun onItemClick(position: Int, view: View) {
-            view.setBackgroundColor(view.resources.getColor(R.color.colorGray1))
+            val centerLatLng = getPolygonCenterPoint(arrAreaModel[position].polygon.points)
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(centerLatLng, 16f))
             positonRemove = position
         }
     }
