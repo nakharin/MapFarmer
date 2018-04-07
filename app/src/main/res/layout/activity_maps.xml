@@ -20,25 +20,6 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            android:padding="8dp"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/txtSearch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/shape_corners_search"
-                android:gravity="center"
-                android:padding="8dp"
-                android:text="Search"
-                android:textColor="@color/colorPrimary" />
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <fragment
@@ -58,102 +39,46 @@
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="36dp">
+                android:layout_marginTop="70dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
 
-                    <RelativeLayout
-                        android:layout_width="200dp"
-                        android:layout_height="450dp"
-                        android:background="@drawable/shape_corners_tap">
-
-                        <LinearLayout
-                            android:id="@+id/vTop"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:padding="8dp"
-                                android:text="ลำดับชั้นของพื้นที่"
-                                android:textColor="@color/colorGray2"
-                                android:textStyle="bold" />
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="1dp"
-                                android:background="@color/colorGray2" />
-
-                        </LinearLayout>
-
-                        <android.support.v7.widget.RecyclerView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@color/colorWhite"
-                            android:layout_marginLeft="1.5dp"
-                            android:layout_marginRight="1.5dp"
-                            android:layout_below="@+id/vTop"
-                            android:layout_above="@+id/vButton"/>
-
-                        <LinearLayout
-                            android:id="@+id/vButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:orientation="vertical">
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="1dp"
-                                android:background="@color/colorGray2" />
-
-                            <FrameLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
-
-                                <ImageView
-                                    android:layout_width="30dp"
-                                    android:layout_height="40dp"
-                                    android:layout_gravity="left"
-                                    android:layout_marginLeft="2dp"
-                                    android:src="@mipmap/ic_remove"/>
-
-                                <ImageView
-                                    android:layout_width="30dp"
-                                    android:layout_height="40dp"
-                                    android:layout_gravity="right"
-                                    android:layout_marginRight="2dp"
-                                    android:src="@mipmap/ic_add_circle"/>
-
-                            </FrameLayout>
-
-                        </LinearLayout>
-
-                    </RelativeLayout>
+                    <include layout="@layout/layout_navigation_maps"
+                        android:visibility="gone"/>
 
                     <ImageView
+                        android:id="@+id/imgNavigation"
                         android:layout_width="28dp"
                         android:layout_height="80dp"
                         android:layout_marginLeft="-1.2dp"
                         android:background="@drawable/shape_corners_tap_next"
-                        android:src="@mipmap/ic_next"/>
+                        android:src="@mipmap/ic_next" />
 
                 </LinearLayout>
 
             </FrameLayout>
 
+            <ImageButton
+                android:id="@+id/imgMapType"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="70dp"
+                android:layout_gravity="right"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_map_normal"
+                android:layout_marginRight="8dp" />
+
             <ImageView
+                android:id="@+id/imgCenterPoint"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center"
                 android:scaleType="centerInside"
-                android:src="@mipmap/ic_center_point" />
+                android:src="@mipmap/ic_center_point"
+                android:visibility="gone"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -166,7 +91,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:layout_marginRight="8dp"
-                    android:src="@mipmap/ic_add" />
+                    android:src="@mipmap/ic_add"
+                    android:visibility="gone"/>
 
 
                 <android.support.design.widget.FloatingActionButton
@@ -177,7 +103,8 @@
                     android:layout_marginLeft="8dp"
                     android:backgroundTint="@color/colorGreen"
                     android:src="@mipmap/ic_done"
-                    app:borderWidth="0dp" />
+                    app:borderWidth="0dp"
+                    android:visibility="gone"/>
 
             </LinearLayout>
 

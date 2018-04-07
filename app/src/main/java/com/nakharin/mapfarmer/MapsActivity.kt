@@ -10,12 +10,18 @@ import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.RelativeLayout
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.gms.common.api.Status
@@ -44,7 +50,6 @@ class MapsActivity : AppCompatActivity() {
     }
 
     private lateinit var toolbar: Toolbar
-    private lateinit var txtSearch: TextView
 
     private lateinit var autocompleteFragment: PlaceAutocompleteFragment
     private lateinit var mapFragment: SupportMapFragment
@@ -52,10 +57,23 @@ class MapsActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var lastLocation: Location
 
+    private lateinit var vNavigation: RelativeLayout
+    private lateinit var imgNavigation: ImageView
+    private lateinit var imgMapType: ImageButton
+
+    private lateinit var linearLayoutManager: LinearLayoutManager
+    private lateinit var recyclerArea: RecyclerView
+
+    private lateinit var imgCenterPoint: ImageView
+
+    private lateinit var imgRemoveArea: ImageView
+    private lateinit var imgAddArea: ImageView
+
     private lateinit var fabAdd: FloatingActionButton
     private lateinit var fabDone: FloatingActionButton
 
     private lateinit var arrLatLng: ArrayList<LatLng>
+    private lateinit var arrAreaModel: ArrayList<AreaModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +84,12 @@ class MapsActivity : AppCompatActivity() {
 
         initWidget()
 
-        txtSearch.setOnClickListener(onClickListener)
+        imgNavigation.setOnClickListener(onClickListener)
+        imgMapType.setOnClickListener(onClickListener)
+
+        imgRemoveArea.setOnClickListener(onClickListener)
+        imgAddArea.setOnClickListener(onClickListener)
+
         fabAdd.setOnClickListener(onClickListener)
         fabDone.setOnClickListener(onClickListener)
 
@@ -80,17 +103,37 @@ class MapsActivity : AppCompatActivity() {
         toolbar.title = "FarmMap"
         setSupportActionBar(toolbar)
 
-        txtSearch = findViewById(R.id.txtSearch)
-
         autocompleteFragment = fragmentManager
                 .findFragmentById(R.id.place_autocomplete_fragment) as PlaceAutocompleteFragment
+
         mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
 
-        arrLatLng = ArrayList()
+        vNavigation = findViewById(R.id.vNavigation)
+        imgNavigation = findViewById(R.id.imgNavigation)
+        imgMapType = findViewById(R.id.imgMapType)
+
+        recyclerArea = findViewById(R.id.recyclerArea)
+        linearLayoutManager = LinearLayoutManager(this)
+        recyclerArea.layoutManager = linearLayoutManager
+        imgCenterPoint = findViewById(R.id.imgCenterPoint)
+
+        imgRemoveArea = findViewById(R.id.imgRemoveArea)
+        imgAddArea = findViewById(R.id.imgAddArea)
 
         fabAdd = findViewById(R.id.fabAdd)
         fabDone = findViewById(R.id.fabDone)
+
+
+        arrLatLng = ArrayList()
+        arrAreaModel = ArrayList()
+
+        val areaModel = AreaModel("ไม่พบข้อมูล", "ไม่พบข้อมูล", null)
+        val arrAreaModelEmpty: ArrayList<AreaModel> = ArrayList()
+        arrAreaModelEmpty.add(areaModel)
+
+        recyclerArea.adapter = RecyclerAreaAdapter(arrAreaModelEmpty)
+
     }
 
     private fun checkPermissionLocation() {
@@ -227,8 +270,43 @@ class MapsActivity : AppCompatActivity() {
 
     private val onClickListener = View.OnClickListener {
 
-        if (it == txtSearch) {
-            loadPlacePicker()
+        if (it == imgNavigation) {
+            val isShow = vNavigation.visibility
+            if(isShow == VISIBLE) {
+                vNavigation.visibility = GONE
+                imgNavigation.setImageResource(R.mipmap.ic_next)
+            } else {
+                vNavigation.visibility = VISIBLE
+                imgNavigation.setImageResource(R.mipmap.ic_back)
+
+                imgCenterPoint.visibility = GONE
+                fabAdd.visibility = GONE
+                fabDone.visibility = GONE
+            }
+        }
+
+        if (it == imgMapType) {
+            map.let {
+                if (map.mapType == GoogleMap.MAP_TYPE_NORMAL) {
+                    map.mapType = GoogleMap.MAP_TYPE_HYBRID
+                } else {
+                    map.mapType = GoogleMap.MAP_TYPE_NORMAL
+                }
+            }
+        }
+
+        if (it == imgRemoveArea) {
+
+        }
+
+        if (it == imgAddArea) {
+            val isShow = imgCenterPoint.visibility
+            if (isShow == GONE) {
+                imgCenterPoint.visibility = VISIBLE
+                fabAdd.visibility = VISIBLE
+                fabDone.visibility = VISIBLE
+                vNavigation.visibility = GONE
+            }
         }
 
         if (it == fabAdd) {
@@ -256,7 +334,15 @@ class MapsActivity : AppCompatActivity() {
                 polygonOptions.clickable(true)
                 map.addPolygon(polygonOptions)
 
+                val areaModel = AreaModel("Name", "Address", polygonOptions)
+                arrAreaModel.add(areaModel)
+
+                recyclerArea.adapter = RecyclerAreaAdapter(arrAreaModel)
+
                 arrLatLng.clear()
+                imgCenterPoint.visibility = GONE
+                fabAdd.visibility = GONE
+                fabDone.visibility = GONE
             }
         }
     }
@@ -265,7 +351,7 @@ class MapsActivity : AppCompatActivity() {
         map = it
 
         map.uiSettings.isZoomControlsEnabled = true
-        map.mapType = GoogleMap.MAP_TYPE_HYBRID
+        map.mapType = GoogleMap.MAP_TYPE_NORMAL
 
         map.setOnPolygonClickListener(onPolygonClickListener)
 
@@ -273,6 +359,6 @@ class MapsActivity : AppCompatActivity() {
     }
 
     private val onPolygonClickListener = GoogleMap.OnPolygonClickListener {
-        it.remove()
+//        it.remove()
     }
 }
