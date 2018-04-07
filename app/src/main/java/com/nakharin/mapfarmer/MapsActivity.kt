@@ -215,7 +215,7 @@ class MapsActivity : AppCompatActivity() {
         }
     }
 
-    fun getPolygonCenterPoint(latLngList: List<LatLng>) : LatLng {
+    fun getPolygonCenterPoint(latLngList: List<LatLng>): LatLng {
         val builder = LatLngBounds.builder()
         for (latLng in latLngList) {
             builder.include(latLng)
@@ -223,6 +223,26 @@ class MapsActivity : AppCompatActivity() {
         var bounds = builder.build()
         return bounds.center
     }
+
+//    private fun makeBitmap(number: String): Bitmap {
+//        var scale = resources.displayMetrics.density
+//        var bitmap = BitmapFactory.decodeResource(resources, R.drawable.shape_circle_marker)
+//        bitmap = bitmap.copy(Bitmap.Config.ARGB_4444, true)
+//
+//        var canvas = Canvas(bitmap)
+//        var paint = Paint(Paint.ANTI_ALIAS_FLAG)
+//        paint.color = Color.RED
+//        paint.textSize = 14 * scale
+//        paint.setShadowLayer(1f, 0f, 1f, Color.RED)
+//        var bounds = Rect()
+//        paint.getTextBounds(number, 0, number.length, bounds)
+//
+//        var x = bitmap.width
+//        var y = bounds.height()
+//        canvas.drawText(number, x.toFloat(), y.toFloat(), paint)
+//
+//        return bitmap
+//    }
 
     private fun setNavigationGone() {
         vNavigation.visibility = GONE
@@ -376,6 +396,13 @@ class MapsActivity : AppCompatActivity() {
                 polygonOptions.fillColor(resources.getColor(R.color.colorPrimaryAlpha))
                 polygonOptions.clickable(true)
                 val polygon = map.addPolygon(polygonOptions)
+
+//                val centerLatLng = getPolygonCenterPoint(polygon.points)
+//                val bitmap = makeBitmap(arrAreaModel.size.toString())
+//                val markerOptions = MarkerOptions()
+//                markerOptions.position(centerLatLng)
+//                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap))
+//                val marker = map.addMarker(markerOptions)
 
                 val areaModel = AreaModel(getAddress(arrLatLng[0]), "" + shoelaceArea(polygon.points), polygon)
                 arrAreaModel.add(areaModel)
