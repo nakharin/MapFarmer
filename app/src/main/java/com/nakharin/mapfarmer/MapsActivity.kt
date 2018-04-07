@@ -7,6 +7,7 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import android.os.Handler
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
@@ -39,6 +40,7 @@ import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolygonOptions
+import com.zqg.kotlin.LoadingDialog
 import java.io.IOException
 
 class MapsActivity : AppCompatActivity() {
@@ -127,13 +129,6 @@ class MapsActivity : AppCompatActivity() {
 
         arrLatLng = ArrayList()
         arrAreaModel = ArrayList()
-
-        val areaModel = AreaModel("ไม่พบข้อมูล", "ไม่พบข้อมูล", null)
-        val arrAreaModelEmpty: ArrayList<AreaModel> = ArrayList()
-        arrAreaModelEmpty.add(areaModel)
-
-        recyclerArea.adapter = RecyclerAreaAdapter(arrAreaModelEmpty)
-
     }
 
     private fun checkPermissionLocation() {
@@ -171,24 +166,39 @@ class MapsActivity : AppCompatActivity() {
     }
 
     private fun getAddress(latLng: LatLng): String {
-        val geocoder = Geocoder(this)
-        val addresses: List<Address>?
-        val address: Address?
-        var addressText = ""
+        var addressList: List<Address>?
+        val address1: String?
+        val address2: String?
+        val state: String?
+        val zipCode: String?
+        val country: String?
 
         try {
-            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-            if (null != addresses && !addresses.isEmpty()) {
-                address = addresses[0]
-                for (i in 0 until address.maxAddressLineIndex) {
-                    addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(i)
-                }
-            }
+            addressList = Geocoder(this).getFromLocation(latLng.latitude, latLng.longitude, 1)
         } catch (e: IOException) {
             Log.e("MapsActivity", e.localizedMessage)
+            return e.localizedMessage
         }
 
-        return addressText
+        if (addressList != null) {
+            address1 = addressList[0].getAddressLine(0)
+            address2 = addressList[0].getAddressLine(1)
+            state = addressList[0].adminArea
+            zipCode = addressList[0].postalCode
+            country = addressList[0].countryName
+            return "$address1 $address2 $state $zipCode $country"
+        } else {
+            return ""
+        }
+    }
+
+    private fun shoelaceArea(v: List<LatLng>): Double {
+        val n = v.size
+        var a = 0.0
+        for (i in 0 until n - 1) {
+            a += v[i].latitude * v[i + 1].longitude - v[i + 1].latitude * v[i].longitude
+        }
+        return Math.abs(a + v[n - 1].latitude * v[0].longitude - v[0].latitude * v[n - 1].longitude) / 2.0
     }
 
     private fun loadPlacePicker() {
@@ -222,7 +232,7 @@ class MapsActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item != null) {
-            when(item.itemId) {
+            when (item.itemId) {
                 R.id.menu_map_search -> {
                     loadPlacePicker()
                     return true
@@ -272,7 +282,7 @@ class MapsActivity : AppCompatActivity() {
 
         if (it == imgNavigation) {
             val isShow = vNavigation.visibility
-            if(isShow == VISIBLE) {
+            if (isShow == VISIBLE) {
                 vNavigation.visibility = GONE
                 imgNavigation.setImageResource(R.mipmap.ic_next)
             } else {
@@ -306,6 +316,7 @@ class MapsActivity : AppCompatActivity() {
                 fabAdd.visibility = VISIBLE
                 fabDone.visibility = VISIBLE
                 vNavigation.visibility = GONE
+                imgNavigation.setImageResource(R.mipmap.ic_next)
             }
         }
 
@@ -324,6 +335,10 @@ class MapsActivity : AppCompatActivity() {
 
         if (it == fabDone) {
             if (arrLatLng.size > 0) {
+
+                val dialog = LoadingDialog(this, "Loading...")
+                dialog.show()
+
                 val polygonOptions = PolygonOptions()
                 arrLatLng.forEach {
                     polygonOptions.add(it)
@@ -332,17 +347,20 @@ class MapsActivity : AppCompatActivity() {
                 polygonOptions.strokeWidth(5f)
                 polygonOptions.fillColor(resources.getColor(R.color.colorPrimaryAlpha))
                 polygonOptions.clickable(true)
-                map.addPolygon(polygonOptions)
+                val polygon = map.addPolygon(polygonOptions)
 
-                val areaModel = AreaModel("Name", "Address", polygonOptions)
+                val areaModel = AreaModel(getAddress(arrLatLng[0]), "" + shoelaceArea(polygon.points), polygon)
                 arrAreaModel.add(areaModel)
 
                 recyclerArea.adapter = RecyclerAreaAdapter(arrAreaModel)
 
-                arrLatLng.clear()
-                imgCenterPoint.visibility = GONE
-                fabAdd.visibility = GONE
-                fabDone.visibility = GONE
+                Handler().postDelayed({
+                    arrLatLng.clear()
+                    imgCenterPoint.visibility = GONE
+                    fabAdd.visibility = GONE
+                    fabDone.visibility = GONE
+                    dialog.close()
+                }, 1000)
             }
         }
     }
@@ -353,12 +371,20 @@ class MapsActivity : AppCompatActivity() {
         map.uiSettings.isZoomControlsEnabled = true
         map.mapType = GoogleMap.MAP_TYPE_NORMAL
 
+        map.setOnMapClickListener(onMapClickListener)
         map.setOnPolygonClickListener(onPolygonClickListener)
 
         checkPermissionLocation()
     }
 
+    private val onMapClickListener = GoogleMap.OnMapClickListener {
+        if (vNavigation.visibility == VISIBLE) {
+            vNavigation.visibility = GONE
+            imgNavigation.setImageResource(R.mipmap.ic_next)
+        }
+    }
+
     private val onPolygonClickListener = GoogleMap.OnPolygonClickListener {
-//        it.remove()
+        //        it.remove()
     }
 }
