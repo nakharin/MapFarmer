@@ -345,17 +345,19 @@ class MapsActivity : AppCompatActivity() {
                 val number = arrAreaModel.size + 1
                 val centerLatLng = MapUtility().getPolygonCenterPoint(polygon.points)
                 val title = MapUtility().getAddress(it.context, centerLatLng)
-                val snippet = MapUtility().shoelaceArea(polygon.points)
+                val snippet = MapUtility().calculateArea(polygon.points)
                 val icon = MapUtility().makeBitmap(resources, number.toString())
+
+                val areaThaiFormat = MapUtility().convertToThaiArea(snippet)
 
                 val markerOptions = MarkerOptions()
                 markerOptions.position(centerLatLng)
                 markerOptions.title(title)
-                markerOptions.snippet(snippet.toString())
+                markerOptions.snippet(areaThaiFormat)
                 markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon))
                 val marker = map.addMarker(markerOptions)
 
-                val areaModel = AreaModel(title, snippet.toString(), polygon, marker)
+                val areaModel = AreaModel(title, areaThaiFormat, polygon, marker)
                 arrAreaModel.add(areaModel)
 
                 recyclerArea.adapter.notifyDataSetChanged()

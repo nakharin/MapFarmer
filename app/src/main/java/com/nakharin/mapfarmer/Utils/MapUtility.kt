@@ -8,7 +8,9 @@ import android.location.Geocoder
 import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.maps.android.SphericalUtil
 import java.io.IOException
+import java.text.DecimalFormat
 
 
 class MapUtility {
@@ -22,13 +24,40 @@ class MapUtility {
         return bounds.center
     }
 
-    fun shoelaceArea(v: List<LatLng>): Double {
-        val n = v.size
-        var a = 0.0
-        for (i in 0 until n - 1) {
-            a += v[i].latitude * v[i + 1].longitude - v[i + 1].latitude * v[i].longitude
+    fun calculateArea(points: List<LatLng>): Double {
+        // Library from SphericalUtil : implementation 'com.google.maps.android:android-maps-utils:0.4+'
+        return SphericalUtil.computeArea(points)
+    }
+
+    fun convertToThaiArea(d: Double) : String {
+
+        var result:String = ""
+
+        val R:Int = (d / 1600).toInt()
+        val modR = d % 1600
+
+        val N:Int =  (modR / 400).toInt()
+        val modN = modR % 400
+
+        val V = (modN / 4)
+
+        if(R > 0) {
+            result += "$R ไร่ "
         }
-        return Math.abs(a + v[n - 1].latitude * v[0].longitude - v[0].latitude * v[n - 1].longitude) / 2.0
+
+        if(N > 0) {
+            result += "$N งาน "
+        }
+
+        result += "${V.format(2)} ตารางวา"
+
+        return result
+    }
+
+    private fun Double.format(fracDigits: Int): String {
+        val df = DecimalFormat()
+        df.maximumFractionDigits = fracDigits
+        return df.format(this)
     }
 
     fun makeBitmap(resources: Resources, number: String): Bitmap {
