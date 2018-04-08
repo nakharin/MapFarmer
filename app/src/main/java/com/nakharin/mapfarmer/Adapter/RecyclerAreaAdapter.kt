@@ -1,4 +1,4 @@
-package com.nakharin.mapfarmer
+package com.nakharin.mapfarmer.Adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -7,7 +7,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.Polygon
+import com.nakharin.mapfarmer.Model.AreaModel
+import com.nakharin.mapfarmer.R
 
 class RecyclerAreaAdapter(private val areaList: ArrayList<AreaModel>) : RecyclerView.Adapter<RecyclerAreaAdapter.ViewHolder>() {
 
@@ -37,7 +40,7 @@ class RecyclerAreaAdapter(private val areaList: ArrayList<AreaModel>) : Recycler
         holder.txtItemTitle.text = areaList[position].title
         holder.txtItemSubTitle.text = areaList[position].subTitle
 
-        holder.imgItem.setOnClickListener(OnImageClickListener(holder, areaList[position].polygon))
+        holder.imgItem.setOnClickListener(OnImageClickListener(holder, areaList[position].polygon, areaList[position].marker))
 
         holder.itemView.setOnClickListener {
 
@@ -51,11 +54,12 @@ class RecyclerAreaAdapter(private val areaList: ArrayList<AreaModel>) : Recycler
         val txtItemSubTitle = v.findViewById<TextView>(R.id.txtItemSubTitle)!!
     }
 
-    class OnImageClickListener(holder: ViewHolder, polygon: Polygon) : View.OnClickListener {
+    class OnImageClickListener(holder: ViewHolder, polygon: Polygon, marker: Marker) : View.OnClickListener {
 
         private val h = holder
         private val r = h.imgItem.resources
         private val p = polygon
+        private val m = marker
 
         override fun onClick(v: View) {
             if (v == h.imgItem) {
@@ -63,10 +67,12 @@ class RecyclerAreaAdapter(private val areaList: ArrayList<AreaModel>) : Recycler
                     h.imgItem.scaleType = ImageView.ScaleType.FIT_CENTER
                     h.imgItem.setImageDrawable(r.getDrawable(R.mipmap.ic_visibility_off))
                     p.isVisible = false
+                    m.isVisible = false
                 } else {
                     h.imgItem.scaleType = ImageView.ScaleType.CENTER_INSIDE
                     h.imgItem.setImageDrawable(r.getDrawable(R.mipmap.ic_visibility))
                     p.isVisible = true
+                    m.isVisible = true
                 }
             }
         }

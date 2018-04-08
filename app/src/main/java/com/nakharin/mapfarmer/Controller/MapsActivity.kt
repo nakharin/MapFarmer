@@ -1,10 +1,8 @@
-package com.nakharin.mapfarmer
+package com.nakharin.mapfarmer.Controller
 
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Address
-import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
@@ -37,8 +35,12 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.nakharin.mapfarmer.Adapter.RecyclerAreaAdapter
+import com.nakharin.mapfarmer.Event.RecyclerItemClickListener
+import com.nakharin.mapfarmer.Model.AreaModel
+import com.nakharin.mapfarmer.R
+import com.nakharin.mapfarmer.Utils.MapUtility
 import com.zqg.kotlin.LoadingDialog
-import java.io.IOException
 
 class MapsActivity : AppCompatActivity() {
 
@@ -71,7 +73,7 @@ class MapsActivity : AppCompatActivity() {
     private lateinit var fabAdd: FloatingActionButton
     private lateinit var fabDone: FloatingActionButton
 
-    private lateinit var arrLatLng: ArrayList<LatLng>
+    private lateinit var arrCircle: ArrayList<Circle>
     private lateinit var arrAreaModel: ArrayList<AreaModel>
 
     private var positonRemove: Int = -1
@@ -79,7 +81,6 @@ class MapsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -128,8 +129,7 @@ class MapsActivity : AppCompatActivity() {
         fabAdd = findViewById(R.id.fabAdd)
         fabDone = findViewById(R.id.fabDone)
 
-
-        arrLatLng = ArrayList()
+        arrCircle = ArrayList()
         arrAreaModel = ArrayList()
 
         recyclerArea.adapter = RecyclerAreaAdapter(arrAreaModel)
@@ -168,42 +168,6 @@ class MapsActivity : AppCompatActivity() {
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
     }
 
-    private fun getAddress(latLng: LatLng): String {
-        var addressList: List<Address>?
-        val address1: String?
-        val address2: String?
-        val state: String?
-        val zipCode: String?
-        val country: String?
-
-        try {
-            addressList = Geocoder(this).getFromLocation(latLng.latitude, latLng.longitude, 1)
-        } catch (e: IOException) {
-            Log.e("MapsActivity", e.localizedMessage)
-            return e.localizedMessage
-        }
-
-        if (addressList != null) {
-            address1 = addressList[0].getAddressLine(0)
-            address2 = addressList[0].getAddressLine(1)
-            state = addressList[0].adminArea
-            zipCode = addressList[0].postalCode
-            country = addressList[0].countryName
-            return "$address1 $address2 $state $zipCode $country"
-        } else {
-            return ""
-        }
-    }
-
-    private fun shoelaceArea(v: List<LatLng>): Double {
-        val n = v.size
-        var a = 0.0
-        for (i in 0 until n - 1) {
-            a += v[i].latitude * v[i + 1].longitude - v[i + 1].latitude * v[i].longitude
-        }
-        return Math.abs(a + v[n - 1].latitude * v[0].longitude - v[0].latitude * v[n - 1].longitude) / 2.0
-    }
-
     private fun loadPlacePicker() {
         val intent = PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
         try {
@@ -214,35 +178,6 @@ class MapsActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
-
-    fun getPolygonCenterPoint(latLngList: List<LatLng>): LatLng {
-        val builder = LatLngBounds.builder()
-        for (latLng in latLngList) {
-            builder.include(latLng)
-        }
-        var bounds = builder.build()
-        return bounds.center
-    }
-
-//    private fun makeBitmap(number: String): Bitmap {
-//        var scale = resources.displayMetrics.density
-//        var bitmap = BitmapFactory.decodeResource(resources, R.drawable.shape_circle_marker)
-//        bitmap = bitmap.copy(Bitmap.Config.ARGB_4444, true)
-//
-//        var canvas = Canvas(bitmap)
-//        var paint = Paint(Paint.ANTI_ALIAS_FLAG)
-//        paint.color = Color.RED
-//        paint.textSize = 14 * scale
-//        paint.setShadowLayer(1f, 0f, 1f, Color.RED)
-//        var bounds = Rect()
-//        paint.getTextBounds(number, 0, number.length, bounds)
-//
-//        var x = bitmap.width
-//        var y = bounds.height()
-//        canvas.drawText(number, x.toFloat(), y.toFloat(), paint)
-//
-//        return bitmap
-//    }
 
     private fun setNavigationGone() {
         vNavigation.visibility = GONE
@@ -317,8 +252,16 @@ class MapsActivity : AppCompatActivity() {
 
     private val onItemClickListener: RecyclerItemClickListener.OnClickListener = object : RecyclerItemClickListener.OnClickListener {
         override fun onItemClick(position: Int, view: View) {
-            val centerLatLng = getPolygonCenterPoint(arrAreaModel[position].polygon.points)
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(centerLatLng, 16f))
+            val centerLatLng = MapUtility().getPolygonCenterPoint(arrAreaModel[position].polygon.points)
+            val zoomLevel = map.cameraPosition.zoom
+            if (zoomLevel.toInt() > 16) {
+                map.animateCamera(CameraUpdateFactory.newLatLng(centerLatLng))
+            } else {
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(centerLatLng, 16f))
+            }
+
+            arrAreaModel[position].marker.showInfoWindow()
+
             positonRemove = position
         }
     }
@@ -341,10 +284,10 @@ class MapsActivity : AppCompatActivity() {
 
         if (it == imgMapType) {
             map.let {
-                if (map.mapType == GoogleMap.MAP_TYPE_NORMAL) {
-                    map.mapType = GoogleMap.MAP_TYPE_HYBRID
+                if (it.mapType == GoogleMap.MAP_TYPE_NORMAL) {
+                    it.mapType = GoogleMap.MAP_TYPE_HYBRID
                 } else {
-                    map.mapType = GoogleMap.MAP_TYPE_NORMAL
+                    it.mapType = GoogleMap.MAP_TYPE_NORMAL
                 }
             }
         }
@@ -352,6 +295,7 @@ class MapsActivity : AppCompatActivity() {
         if (it == imgRemoveArea) {
             if (positonRemove != -1) {
                 arrAreaModel[positonRemove].polygon.remove()
+                arrAreaModel[positonRemove].marker.remove()
                 arrAreaModel.removeAt(positonRemove)
                 recyclerArea.adapter.notifyDataSetChanged()
                 positonRemove = -1
@@ -370,26 +314,27 @@ class MapsActivity : AppCompatActivity() {
 
         if (it == fabAdd) {
             map.let {
-                arrLatLng.add(it.cameraPosition.target)
                 val circleOptions = CircleOptions()
                 circleOptions.center(it.cameraPosition.target)
                 circleOptions.radius(5.0)
                 circleOptions.fillColor(resources.getColor(R.color.colorPrimaryDark))
                 circleOptions.strokeWidth(5f)
                 circleOptions.strokeColor(resources.getColor(R.color.colorWhite))
-                map.addCircle(circleOptions)
+                circleOptions.clickable(true)
+                val circle = it.addCircle(circleOptions)
+                arrCircle.add(circle)
             }
         }
 
         if (it == fabDone) {
-            if (arrLatLng.size > 0) {
+            if (arrCircle.size > 0) {
 
                 val dialog = LoadingDialog(this, "Loading...")
                 dialog.show()
 
                 val polygonOptions = PolygonOptions()
-                arrLatLng.forEach {
-                    polygonOptions.add(it)
+                arrCircle.forEach {
+                    polygonOptions.add(it.center)
                 }
                 polygonOptions.strokeColor(resources.getColor(R.color.colorPrimaryDark))
                 polygonOptions.strokeWidth(5f)
@@ -397,20 +342,29 @@ class MapsActivity : AppCompatActivity() {
                 polygonOptions.clickable(true)
                 val polygon = map.addPolygon(polygonOptions)
 
-//                val centerLatLng = getPolygonCenterPoint(polygon.points)
-//                val bitmap = makeBitmap(arrAreaModel.size.toString())
-//                val markerOptions = MarkerOptions()
-//                markerOptions.position(centerLatLng)
-//                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap))
-//                val marker = map.addMarker(markerOptions)
+                val number = arrAreaModel.size + 1
+                val centerLatLng = MapUtility().getPolygonCenterPoint(polygon.points)
+                val title = MapUtility().getAddress(it.context, centerLatLng)
+                val snippet = MapUtility().shoelaceArea(polygon.points)
+                val icon = MapUtility().makeBitmap(resources, number.toString())
 
-                val areaModel = AreaModel(getAddress(arrLatLng[0]), "" + shoelaceArea(polygon.points), polygon)
+                val markerOptions = MarkerOptions()
+                markerOptions.position(centerLatLng)
+                markerOptions.title(title)
+                markerOptions.snippet(snippet.toString())
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon))
+                val marker = map.addMarker(markerOptions)
+
+                val areaModel = AreaModel(title, snippet.toString(), polygon, marker)
                 arrAreaModel.add(areaModel)
 
                 recyclerArea.adapter.notifyDataSetChanged()
 
                 Handler().postDelayed({
-                    arrLatLng.clear()
+                    arrCircle.forEach {
+                        it.remove()
+                    }
+                    arrCircle.clear()
                     imgCenterPoint.visibility = GONE
                     fabAdd.visibility = GONE
                     fabDone.visibility = GONE

@@ -1,4 +1,4 @@
-package com.nakharin.mapfarmer
+package com.nakharin.mapfarmer.Event
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
