@@ -375,9 +375,9 @@ class MapsActivity : AppCompatActivity() {
             map.let {
                 val circleOptions = CircleOptions()
                 circleOptions.center(it.cameraPosition.target)
-                circleOptions.radius(5.0)
+                circleOptions.radius(4.0)
                 circleOptions.fillColor(resources.getColor(R.color.colorPrimaryDark))
-                circleOptions.strokeWidth(5f)
+                circleOptions.strokeWidth(4f)
                 circleOptions.strokeColor(resources.getColor(R.color.colorWhite))
                 circleOptions.clickable(true)
                 val circle = it.addCircle(circleOptions)
@@ -405,18 +405,16 @@ class MapsActivity : AppCompatActivity() {
                     polygonOptions.strokeWidth(5f)
                     polygonOptions.fillColor(resources.getColor(R.color.colorPrimaryAlpha))
                     polygonOptions.clickable(true)
+
                     val polygon = map.addPolygon(polygonOptions)
-
                     val centerLatLng = MapUtility().getPolygonCenterPoint(polygon.points)
-
                     val title = await {
                         MapUtility().getAddress(it.context, centerLatLng)
                     }
-
                     val snippet = MapUtility().calculateArea(polygon.points)
-                    val icon = MapUtility().makeBitmap(resources, numberMarker.toString())
-                    numberMarker++
-
+                    val icon = await {
+                        MapUtility().makeBitmap(resources, numberMarker.toString())
+                    }
                     val areaThaiFormat = MapUtility().convertToThaiArea(snippet)
 
                     val markerOptions = MarkerOptions()
@@ -431,6 +429,8 @@ class MapsActivity : AppCompatActivity() {
 
                     recyclerArea.adapter.notifyDataSetChanged()
 
+                    numberMarker++
+
                 }.finally {
                     Handler().postDelayed({
                         arrCircle.forEach {
@@ -441,7 +441,7 @@ class MapsActivity : AppCompatActivity() {
                         fabAdd.visibility = GONE
                         fabDone.visibility = GONE
                         dialog.close()
-                    }, 1000)
+                    }, 100)
                 }
             }
         }
