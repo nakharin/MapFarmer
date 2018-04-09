@@ -1,5 +1,7 @@
 package com.nakharin.mapfarmer.Controller
 
+import android.animation.Animator
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -17,7 +19,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.RelativeLayout
@@ -39,6 +41,7 @@ import com.nakharin.mapfarmer.Adapter.RecyclerAreaAdapter
 import com.nakharin.mapfarmer.Event.RecyclerItemClickListener
 import com.nakharin.mapfarmer.Model.AreaModel
 import com.nakharin.mapfarmer.R
+import com.nakharin.mapfarmer.Utils.AnimationUtility
 import com.nakharin.mapfarmer.Utils.MapUtility
 import com.zqg.kotlin.LoadingDialog
 
@@ -58,6 +61,7 @@ class MapsActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var lastLocation: Location
 
+    private lateinit var vNavigationParent: FrameLayout
     private lateinit var vNavigation: RelativeLayout
     private lateinit var imgNavigation: ImageView
     private lateinit var imgMapType: ImageButton
@@ -76,7 +80,8 @@ class MapsActivity : AppCompatActivity() {
     private lateinit var arrCircle: ArrayList<Circle>
     private lateinit var arrAreaModel: ArrayList<AreaModel>
 
-    private var positonRemove: Int = -1
+    private var isNavigationShow: Boolean = false
+    private var positionRemove: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,6 +118,7 @@ class MapsActivity : AppCompatActivity() {
         mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
 
+        vNavigationParent = findViewById(R.id.vNavigationParent)
         vNavigation = findViewById(R.id.vNavigation)
         imgNavigation = findViewById(R.id.imgNavigation)
         imgMapType = findViewById(R.id.imgMapType)
@@ -179,9 +185,55 @@ class MapsActivity : AppCompatActivity() {
         }
     }
 
-    private fun setNavigationGone() {
-        vNavigation.visibility = GONE
-        imgNavigation.setImageResource(R.mipmap.ic_next)
+    private fun showNavigationArea() {
+        val anim = ObjectAnimator.ofFloat(vNavigationParent, View.TRANSLATION_X, vNavigation.width.toFloat())
+        anim.duration = AnimationUtility.DEFAULT_ANIMATION_DURATION
+        anim.start()
+        anim.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator) {
+            }
+
+            override fun onAnimationEnd(animation: Animator) {
+                imgNavigation.setImageResource(R.mipmap.ic_back)
+                imgCenterPoint.visibility = GONE
+                fabAdd.visibility = GONE
+                fabDone.visibility = GONE
+                isNavigationShow = true
+            }
+
+            override fun onAnimationCancel(animation: Animator) {
+            }
+
+            override fun onAnimationStart(animation: Animator) {
+            }
+        })
+    }
+
+    private fun hideNavigationArea(showFab:Boolean) {
+        val anim = ObjectAnimator.ofFloat(vNavigationParent, View.TRANSLATION_X, 0F)
+        anim.duration = AnimationUtility.DEFAULT_ANIMATION_DURATION
+        anim.start()
+        anim.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator) {
+            }
+
+            override fun onAnimationEnd(animation: Animator) {
+                imgNavigation.setImageResource(R.mipmap.ic_next)
+                isNavigationShow = false
+
+                if (showFab) {
+                    imgCenterPoint.visibility = View.VISIBLE
+                    fabAdd.visibility = View.VISIBLE
+                    fabDone.visibility = View.VISIBLE
+                }
+            }
+
+            override fun onAnimationCancel(animation: Animator) {
+            }
+
+            override fun onAnimationStart(animation: Animator) {
+            }
+        })
     }
 
     override fun onRequestPermissionsResult(requestCode: Int,
@@ -244,9 +296,14 @@ class MapsActivity : AppCompatActivity() {
     private val onPlaceSelectionListener = object : PlaceSelectionListener {
 
         override fun onPlaceSelected(place: Place) {
+            val placeName = place.name.toString()
+            val placeAddress = place.address.toString()
+
+            placeMarkerOnMap(place.latLng, placeName, placeAddress)
         }
 
         override fun onError(status: Status) {
+            Log.e(TAG, status.statusMessage)
         }
     }
 
@@ -262,23 +319,17 @@ class MapsActivity : AppCompatActivity() {
 
             arrAreaModel[position].marker.showInfoWindow()
 
-            positonRemove = position
+            positionRemove = position
         }
     }
 
     private val onClickListener = View.OnClickListener {
 
         if (it == imgNavigation) {
-            val isShow = vNavigation.visibility
-            if (isShow == VISIBLE) {
-                setNavigationGone()
+            if (isNavigationShow) {
+                hideNavigationArea(false)
             } else {
-                vNavigation.visibility = VISIBLE
-                imgNavigation.setImageResource(R.mipmap.ic_back)
-
-                imgCenterPoint.visibility = GONE
-                fabAdd.visibility = GONE
-                fabDone.visibility = GONE
+                showNavigationArea()
             }
         }
 
@@ -293,22 +344,19 @@ class MapsActivity : AppCompatActivity() {
         }
 
         if (it == imgRemoveArea) {
-            if (positonRemove != -1) {
-                arrAreaModel[positonRemove].polygon.remove()
-                arrAreaModel[positonRemove].marker.remove()
-                arrAreaModel.removeAt(positonRemove)
+            if (positionRemove != -1) {
+                arrAreaModel[positionRemove].polygon.remove()
+                arrAreaModel[positionRemove].marker.remove()
+                arrAreaModel.removeAt(positionRemove)
                 recyclerArea.adapter.notifyDataSetChanged()
-                positonRemove = -1
+                positionRemove = -1
             }
         }
 
         if (it == imgAddArea) {
             val isShow = imgCenterPoint.visibility
             if (isShow == GONE) {
-                imgCenterPoint.visibility = VISIBLE
-                fabAdd.visibility = VISIBLE
-                fabDone.visibility = VISIBLE
-                setNavigationGone()
+                hideNavigationArea(true)
             }
         }
 
@@ -330,6 +378,7 @@ class MapsActivity : AppCompatActivity() {
             if (arrCircle.size > 0) {
 
                 val dialog = LoadingDialog(this, "Loading...")
+                dialog.cancelable(false)
                 dialog.show()
 
                 val polygonOptions = PolygonOptions()

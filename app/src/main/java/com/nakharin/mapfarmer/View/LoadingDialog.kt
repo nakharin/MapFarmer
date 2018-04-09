@@ -8,8 +8,8 @@ import android.widget.TextView
 import com.nakharin.mapfarmer.R
 
 class LoadingDialog(context: Context, msg: String) {
-    internal var mLoadingView: LVCircularRing
-    internal var mLoadingDialog: Dialog? = null
+    private var mLoadingView: LVCircularRing
+    private var mLoadingDialog: Dialog? = null
 
     init {
         val view = LayoutInflater.from(context).inflate(
@@ -19,10 +19,15 @@ class LoadingDialog(context: Context, msg: String) {
         val loadingText = view.findViewById(R.id.loading_text) as TextView
         loadingText.text = msg
         mLoadingDialog = Dialog(context, R.style.loading_dialog)
-        mLoadingDialog!!.setCancelable(true)
         mLoadingDialog!!.setContentView(layout, LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT))
+    }
+
+    fun cancelable(isCancel: Boolean) {
+        if (mLoadingDialog != null) {
+            mLoadingDialog!!.setCancelable(isCancel)
+        }
     }
 
     fun show() {
