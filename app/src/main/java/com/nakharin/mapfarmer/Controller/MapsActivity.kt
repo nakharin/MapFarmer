@@ -19,10 +19,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
-import android.widget.FrameLayout
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.RelativeLayout
+import android.widget.*
+import co.metalab.asyncawait.async
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.gms.common.api.Status
@@ -72,6 +70,7 @@ class MapsActivity : AppCompatActivity() {
     private lateinit var imgCenterPoint: ImageView
 
     private lateinit var imgRemoveArea: ImageView
+    private lateinit var imgEditArea: ImageView
     private lateinit var imgAddArea: ImageView
 
     private lateinit var fabAdd: FloatingActionButton
@@ -80,6 +79,7 @@ class MapsActivity : AppCompatActivity() {
     private lateinit var arrCircle: ArrayList<Circle>
     private lateinit var arrAreaModel: ArrayList<AreaModel>
 
+    private var numberMarker: Int = 1
     private var isNavigationShow: Boolean = false
     private var positionRemove: Int = -1
 
@@ -95,6 +95,7 @@ class MapsActivity : AppCompatActivity() {
         imgMapType.setOnClickListener(onClickListener)
 
         imgRemoveArea.setOnClickListener(onClickListener)
+        imgEditArea.setOnClickListener(onClickListener)
         imgAddArea.setOnClickListener(onClickListener)
 
         fabAdd.setOnClickListener(onClickListener)
@@ -130,6 +131,7 @@ class MapsActivity : AppCompatActivity() {
         imgCenterPoint = findViewById(R.id.imgCenterPoint)
 
         imgRemoveArea = findViewById(R.id.imgRemoveArea)
+        imgEditArea = findViewById(R.id.imgEditArea)
         imgAddArea = findViewById(R.id.imgAddArea)
 
         fabAdd = findViewById(R.id.fabAdd)
@@ -209,7 +211,7 @@ class MapsActivity : AppCompatActivity() {
         })
     }
 
-    private fun hideNavigationArea(showFab:Boolean) {
+    private fun hideNavigationArea(showFab: Boolean) {
         val anim = ObjectAnimator.ofFloat(vNavigationParent, View.TRANSLATION_X, 0F)
         anim.duration = AnimationUtility.DEFAULT_ANIMATION_DURATION
         anim.start()
@@ -319,7 +321,12 @@ class MapsActivity : AppCompatActivity() {
 
             arrAreaModel[position].marker.showInfoWindow()
 
+            if (positionRemove != -1) {
+                arrAreaModel[positionRemove].state = false
+            }
+            arrAreaModel[position].state = true
             positionRemove = position
+            recyclerArea.adapter.notifyDataSetChanged()
         }
     }
 
@@ -353,6 +360,10 @@ class MapsActivity : AppCompatActivity() {
             }
         }
 
+        if (it == imgEditArea) {
+            Toast.makeText(this, "Edit", Toast.LENGTH_SHORT).show()
+        }
+
         if (it == imgAddArea) {
             val isShow = imgCenterPoint.visibility
             if (isShow == GONE) {
@@ -371,6 +382,8 @@ class MapsActivity : AppCompatActivity() {
                 circleOptions.clickable(true)
                 val circle = it.addCircle(circleOptions)
                 arrCircle.add(circle)
+
+                Toast.makeText(this, "Added !!!", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -381,46 +394,55 @@ class MapsActivity : AppCompatActivity() {
                 dialog.cancelable(false)
                 dialog.show()
 
-                val polygonOptions = PolygonOptions()
-                arrCircle.forEach {
-                    polygonOptions.add(it.center)
-                }
-                polygonOptions.strokeColor(resources.getColor(R.color.colorPrimaryDark))
-                polygonOptions.strokeWidth(5f)
-                polygonOptions.fillColor(resources.getColor(R.color.colorPrimaryAlpha))
-                polygonOptions.clickable(true)
-                val polygon = map.addPolygon(polygonOptions)
+                async {
 
-                val number = arrAreaModel.size + 1
-                val centerLatLng = MapUtility().getPolygonCenterPoint(polygon.points)
-                val title = MapUtility().getAddress(it.context, centerLatLng)
-                val snippet = MapUtility().calculateArea(polygon.points)
-                val icon = MapUtility().makeBitmap(resources, number.toString())
-
-                val areaThaiFormat = MapUtility().convertToThaiArea(snippet)
-
-                val markerOptions = MarkerOptions()
-                markerOptions.position(centerLatLng)
-                markerOptions.title(title)
-                markerOptions.snippet(areaThaiFormat)
-                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon))
-                val marker = map.addMarker(markerOptions)
-
-                val areaModel = AreaModel(title, areaThaiFormat, polygon, marker)
-                arrAreaModel.add(areaModel)
-
-                recyclerArea.adapter.notifyDataSetChanged()
-
-                Handler().postDelayed({
+                    val polygonOptions = PolygonOptions()
                     arrCircle.forEach {
-                        it.remove()
+                        polygonOptions.add(it.center)
                     }
-                    arrCircle.clear()
-                    imgCenterPoint.visibility = GONE
-                    fabAdd.visibility = GONE
-                    fabDone.visibility = GONE
-                    dialog.close()
-                }, 1000)
+
+                    polygonOptions.strokeColor(resources.getColor(R.color.colorPrimaryDark))
+                    polygonOptions.strokeWidth(5f)
+                    polygonOptions.fillColor(resources.getColor(R.color.colorPrimaryAlpha))
+                    polygonOptions.clickable(true)
+                    val polygon = map.addPolygon(polygonOptions)
+
+                    val centerLatLng = MapUtility().getPolygonCenterPoint(polygon.points)
+
+                    val title = await {
+                        MapUtility().getAddress(it.context, centerLatLng)
+                    }
+
+                    val snippet = MapUtility().calculateArea(polygon.points)
+                    val icon = MapUtility().makeBitmap(resources, numberMarker.toString())
+                    numberMarker++
+
+                    val areaThaiFormat = MapUtility().convertToThaiArea(snippet)
+
+                    val markerOptions = MarkerOptions()
+                    markerOptions.position(centerLatLng)
+                    markerOptions.title(title)
+                    markerOptions.snippet(areaThaiFormat)
+                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon))
+                    val marker = map.addMarker(markerOptions)
+
+                    val areaModel = AreaModel(title, areaThaiFormat, polygon, marker, false)
+                    arrAreaModel.add(areaModel)
+
+                    recyclerArea.adapter.notifyDataSetChanged()
+
+                }.finally {
+                    Handler().postDelayed({
+                        arrCircle.forEach {
+                            it.remove()
+                        }
+                        arrCircle.clear()
+                        imgCenterPoint.visibility = GONE
+                        fabAdd.visibility = GONE
+                        fabDone.visibility = GONE
+                        dialog.close()
+                    }, 1000)
+                }
             }
         }
     }
@@ -431,7 +453,13 @@ class MapsActivity : AppCompatActivity() {
         map.uiSettings.isZoomControlsEnabled = true
         map.mapType = GoogleMap.MAP_TYPE_NORMAL
 
+        map.setOnMarkerClickListener(onMarkerClickListener)
+
         checkPermissionLocation()
+    }
+
+    private val onMarkerClickListener: GoogleMap.OnMarkerClickListener = GoogleMap.OnMarkerClickListener {
+        false
     }
 }
 

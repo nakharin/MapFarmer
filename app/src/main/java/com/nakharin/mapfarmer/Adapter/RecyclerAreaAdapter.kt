@@ -14,6 +14,8 @@ import com.nakharin.mapfarmer.R
 
 class RecyclerAreaAdapter(private val areaList: ArrayList<AreaModel>) : RecyclerView.Adapter<RecyclerAreaAdapter.ViewHolder>() {
 
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         return ViewHolder(layoutInflater.inflate(R.layout.view_recycler_area_item_row, parent, false))
@@ -25,10 +27,10 @@ class RecyclerAreaAdapter(private val areaList: ArrayList<AreaModel>) : Recycler
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        if (position % 2 == 0) {
-            holder.vBackground.setBackgroundColor(holder.vBackground.resources.getColor(R.color.colorWhite))
-        } else {
+        if (areaList[position].state) {
             holder.vBackground.setBackgroundColor(holder.vBackground.resources.getColor(R.color.colorGray1Alpha))
+        } else {
+            holder.vBackground.setBackgroundColor(holder.vBackground.resources.getColor(R.color.colorWhite))
         }
 
         if (areaList[position].polygon.isVisible) {
@@ -41,10 +43,6 @@ class RecyclerAreaAdapter(private val areaList: ArrayList<AreaModel>) : Recycler
         holder.txtItemSubTitle.text = areaList[position].subTitle
 
         holder.imgItem.setOnClickListener(OnImageClickListener(holder, areaList[position].polygon, areaList[position].marker))
-
-        holder.itemView.setOnClickListener {
-
-        }
     }
 
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {

@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="ลำดับชั้นของพื้นที่"
-            android:textColor="@color/colorBlack"
+            android:textColor="@color/colorGray2"
             android:textStyle="bold" />
 
         <View
@@ -61,6 +61,14 @@
                 android:layout_gravity="left"
                 android:layout_marginLeft="6dp"
                 android:src="@mipmap/ic_remove" />
+
+            <ImageView
+                android:id="@+id/imgEditArea"
+                android:layout_width="30dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="6dp"
+                android:src="@mipmap/ic_edit" />
 
             <ImageView
                 android:id="@+id/imgAddArea"
