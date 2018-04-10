@@ -83,6 +83,10 @@ class MapsActivity : AppCompatActivity() {
     private var isNavigationShow: Boolean = false
     private var positionRemove: Int = -1
 
+    /******************************************************************************************
+     ********************************* Method *************************************************
+     ******************************************************************************************/
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
@@ -295,6 +299,10 @@ class MapsActivity : AppCompatActivity() {
         }
     }
 
+    /******************************************************************************************
+     ****************************** Listener *************************************************
+     ******************************************************************************************/
+
     private val onPlaceSelectionListener = object : PlaceSelectionListener {
 
         override fun onPlaceSelected(place: Place) {
@@ -423,8 +431,9 @@ class MapsActivity : AppCompatActivity() {
                     markerOptions.snippet(areaThaiFormat)
                     markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon))
                     val marker = map.addMarker(markerOptions)
+                    marker.tag = numberMarker
 
-                    val areaModel = AreaModel(title, areaThaiFormat, polygon, marker, false)
+                    val areaModel = AreaModel(numberMarker, title, areaThaiFormat, polygon, marker, false)
                     arrAreaModel.add(areaModel)
 
                     recyclerArea.adapter.notifyDataSetChanged()
@@ -459,8 +468,31 @@ class MapsActivity : AppCompatActivity() {
     }
 
     private val onMarkerClickListener: GoogleMap.OnMarkerClickListener = GoogleMap.OnMarkerClickListener {
+
+        val position = arrAreaModel.getPositionFromTag(it.tag as Int)
+        if (positionRemove != -1) {
+            arrAreaModel[positionRemove].state = false
+        }
+
+        arrAreaModel[position].state = true
+        positionRemove = position
+        recyclerArea.adapter.notifyDataSetChanged()
+
         false
     }
+}
+
+/******************************************************************************************
+ ****************************** Extension *************************************************
+ ******************************************************************************************/
+
+fun ArrayList<AreaModel>.getPositionFromTag(tag: Int) : Int {
+    for (i in this.indices) {
+        if (this[i].tag == tag) {
+            return i
+        }
+    }
+    return -1
 }
 
 fun RecyclerView.addOnItemClickListener(listener: RecyclerItemClickListener.OnClickListener) {

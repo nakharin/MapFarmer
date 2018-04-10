@@ -1,5 +1,6 @@
 package com.nakharin.mapfarmer.Adapter
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -14,9 +15,10 @@ import com.nakharin.mapfarmer.R
 
 class RecyclerAreaAdapter(private val areaList: ArrayList<AreaModel>) : RecyclerView.Adapter<RecyclerAreaAdapter.ViewHolder>() {
 
-
+    private lateinit var mContext: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        mContext = parent.context
         val layoutInflater = LayoutInflater.from(parent.context)
         return ViewHolder(layoutInflater.inflate(R.layout.view_recycler_area_item_row, parent, false))
     }
@@ -28,15 +30,19 @@ class RecyclerAreaAdapter(private val areaList: ArrayList<AreaModel>) : Recycler
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         if (areaList[position].state) {
-            holder.vBackground.setBackgroundColor(holder.vBackground.resources.getColor(R.color.colorGray1Alpha))
+            holder.vBackground.setBackgroundColor(mContext.resources.getColor(R.color.colorGray2Alpha))
+            holder.txtItemTitle.setTextColor(mContext.resources.getColor(R.color.colorWhite))
+            holder.txtItemSubTitle.setTextColor(mContext.resources.getColor(R.color.colorWhite))
         } else {
-            holder.vBackground.setBackgroundColor(holder.vBackground.resources.getColor(R.color.colorWhite))
+            holder.vBackground.setBackgroundColor(mContext.resources.getColor(R.color.colorWhite))
+            holder.txtItemTitle.setTextColor(mContext.resources.getColor(R.color.colorGray2))
+            holder.txtItemSubTitle.setTextColor(mContext.resources.getColor(R.color.colorGray2))
         }
 
         if (areaList[position].polygon.isVisible) {
-            holder.imgItem.setImageDrawable(holder.imgItem.resources.getDrawable(R.mipmap.ic_visibility))
+            holder.imgItem.setImageDrawable(mContext.resources.getDrawable(R.mipmap.ic_visibility))
         } else {
-            holder.imgItem.setImageDrawable(holder.imgItem.resources.getDrawable(R.mipmap.ic_visibility_off))
+            holder.imgItem.setImageDrawable(mContext.resources.getDrawable(R.mipmap.ic_visibility_off))
         }
 
         holder.txtItemTitle.text = areaList[position].title
