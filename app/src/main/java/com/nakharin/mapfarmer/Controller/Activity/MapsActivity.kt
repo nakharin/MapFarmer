@@ -22,7 +22,6 @@ import android.view.View
 import android.view.View.GONE
 import android.widget.*
 import co.metalab.asyncawait.async
-import com.emcsthai.emcslibrary.Fragment.DialogConfirm
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.gms.common.api.Status
@@ -38,6 +37,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.nakharin.mapfarmer.Adapter.RecyclerAreaAdapter
+import com.nakharin.mapfarmer.Controller.Fragment.DialogEditorPolygon
 import com.nakharin.mapfarmer.Event.RecyclerItemClickListener
 import com.nakharin.mapfarmer.Model.AreaModel
 import com.nakharin.mapfarmer.R
@@ -45,7 +45,7 @@ import com.nakharin.mapfarmer.Utils.AnimationUtility
 import com.nakharin.mapfarmer.Utils.MapUtility
 import com.zqg.kotlin.LoadingDialog
 
-class MapsActivity : AppCompatActivity(), DialogConfirm.OnDialogListener {
+class MapsActivity : AppCompatActivity() {
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
@@ -116,7 +116,7 @@ class MapsActivity : AppCompatActivity(), DialogConfirm.OnDialogListener {
 
     private fun initWidget() {
         toolbar = findViewById(R.id.toolbar)
-        toolbar.title = "FarmMap"
+        toolbar.title = resources.getString(R.string.app_name)
         setSupportActionBar(toolbar)
 
         autocompleteFragment = fragmentManager
@@ -371,15 +371,22 @@ class MapsActivity : AppCompatActivity(), DialogConfirm.OnDialogListener {
         }
 
         if (it == imgEditArea) {
+            if (positionRemove != -1) {
+                DialogEditorPolygon.Builder(supportFragmentManager)
+                        .setTitle(arrAreaModel[positionRemove].title)
+                        .setCancelable(false)
+                        .setOnDialogListener(object : DialogEditorPolygon.OnDialogListener {
+                            override fun onPositiveClick(s: String, d: Dialog) {
+                                arrAreaModel[positionRemove].title = s
+                                recyclerArea.adapter.notifyDataSetChanged()
+                                d.dismiss()
+                            }
 
-            val dialogConfirm = DialogConfirm.Builder(DialogConfirm.Type.TWO)
-                    .setTitle(R.string.str_yes)
-                    .setMessage(R.string.str_yes)
-                    .setCancelable(false)
-                    .setPositive(R.string.str_yes)
-                    .setNegative(R.string.str_no)
-                    .build()
-            dialogConfirm.show(supportFragmentManager, "dialogConfirm")
+                            override fun onNegativeClick(d: Dialog) {
+                                d.dismiss()
+                            }
+                        }).build()
+            }
         }
 
         if (it == imgAddArea) {
@@ -489,14 +496,6 @@ class MapsActivity : AppCompatActivity(), DialogConfirm.OnDialogListener {
         recyclerArea.adapter.notifyDataSetChanged()
 
         false
-    }
-
-    override fun onPositiveButtonClick(dialog: Dialog?) {
-        dialog?.dismiss()
-    }
-
-    override fun onNegativeButtonClick(dialog: Dialog?) {
-        dialog?.dismiss()
     }
 }
 

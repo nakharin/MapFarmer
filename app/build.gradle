@@ -32,8 +32,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
-    implementation project(':TheCheeseLibrary')
-    implementation project(':EmcsLibrary')
+    api project(':TheCheeseLibrary')
+    api project(':EmcsLibrary')
 
     implementation "com.android.support:appcompat-v7:${supportAppCompatVersion}"
     implementation "com.android.support:design:${supportAppCompatVersion}"
