@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <stroke
+        android:width="@dimen/shape_spinner_width"
+        android:color="@color/colorRed" />
+
+    <padding
+        android:bottom="@dimen/shape_spinner_padding"
+        android:left="@dimen/shape_spinner_padding"
+        android:right="@dimen/shape_spinner_padding"
+        android:top="@dimen/shape_spinner_padding" />
+
+    <corners android:radius="@dimen/shape_spinner_radius" />
+
+    <solid android:color="@color/colorWhite" />
+</shape>

@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">EmcsLibrary</string>
+
+    <!-- LoadingView -->
+    <string name="str_loading">Loading...</string>
+
+    <!-- SelectView -->
+    <string name="str_picture">Picture</string>
+    <string name="str_icon">Icon</string>
+    <string name="str_list">List</string>
+    <string name="str_server_error">500 Internal Server Error</string>
+    <string name="str_try_again">Try Again</string>
+    <string name="str_edt_helper">helper</string>
+    <string name="str_error">Error</string>
+    <string name="str_clear">Clear</string>
+    <string name="str_save">Save</string>
+    <string name="str_sign">ลายเซ็น</string>
+
+    <string name="str_back_again">Please click BACK again to exit</string>
+
+    <string name="search_hint">Search...</string>
+</resources>

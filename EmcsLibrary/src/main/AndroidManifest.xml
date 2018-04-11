@@ -1,0 +1,29 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.emcsthai.emcslibrary">
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true">
+
+        <activity
+            android:name=".Activity.SignatureActivity"
+            android:screenOrientation="landscape" />
+
+        <activity
+            android:name=".Activity.ZXingScannerActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Activity.SearchActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.ortiz.touch.ViewPagerActivity"
+            android:screenOrientation="portrait" />
+
+    </application>
+
+</manifest>

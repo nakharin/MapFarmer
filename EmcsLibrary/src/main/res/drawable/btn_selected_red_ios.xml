@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <stroke
+        android:width="@dimen/shape_sign_width"
+        android:color="@color/colorPrimary" />
+
+    <padding
+        android:bottom="@dimen/shape_sign_padding"
+        android:left="@dimen/shape_sign_padding"
+        android:right="@dimen/shape_sign_padding"
+        android:top="@dimen/shape_sign_padding" />
+
+    <corners
+        android:bottomLeftRadius="@dimen/shape_sign_radius"
+        android:bottomRightRadius="@dimen/shape_sign_radius"
+        android:topLeftRadius="@dimen/shape_sign_radius"
+        android:topRightRadius="@dimen/shape_sign_radius" />
+
+    <solid android:color="@color/colorPrimaryLight" />
+</shape>

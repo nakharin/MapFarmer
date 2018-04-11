@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <stroke
+        android:width="@dimen/shape_select_width"
+        android:color="@color/colorPrimary" />
+
+    <padding
+        android:bottom="@dimen/shape_select_padding"
+        android:left="@dimen/shape_select_padding"
+        android:right="@dimen/shape_select_padding"
+        android:top="@dimen/shape_select_padding" />
+
+    <corners
+        android:bottomLeftRadius="@dimen/shape_select_radius"
+        android:topLeftRadius="@dimen/shape_select_radius" />
+
+    <solid android:color="@color/colorPrimary" />
+</shape>

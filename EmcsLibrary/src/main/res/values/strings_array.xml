@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="query_suggestions">
+        <item>Android</item>
+        <item>Swift</item>
+        <item>Kotlin</item>
+        <item>Windows Phone</item>
+        <item>Java</item>
+        <item>C</item>
+        <item>C#</item>
+        <item>C++</item>
+        <item>iOS</item>
+        <item>SCALA</item>
+        <item>Ruby</item>
+        <item>JavaScript</item>
+    </string-array>
+
+</resources>

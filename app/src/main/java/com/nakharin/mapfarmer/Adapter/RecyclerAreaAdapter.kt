@@ -1,6 +1,7 @@
 package com.nakharin.mapfarmer.Adapter
 
 import android.content.Context
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -30,19 +31,19 @@ class RecyclerAreaAdapter(private val areaList: ArrayList<AreaModel>) : Recycler
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         if (areaList[position].state) {
-            holder.vBackground.setBackgroundColor(mContext.resources.getColor(R.color.colorGray2Alpha))
-            holder.txtItemTitle.setTextColor(mContext.resources.getColor(R.color.colorWhite))
-            holder.txtItemSubTitle.setTextColor(mContext.resources.getColor(R.color.colorWhite))
+            holder.vBackground.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorGray2Alpha))
+            holder.txtItemTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorWhite))
+            holder.txtItemSubTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorWhite))
         } else {
-            holder.vBackground.setBackgroundColor(mContext.resources.getColor(R.color.colorWhite))
-            holder.txtItemTitle.setTextColor(mContext.resources.getColor(R.color.colorGray2))
-            holder.txtItemSubTitle.setTextColor(mContext.resources.getColor(R.color.colorGray2))
+            holder.vBackground.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorWhite))
+            holder.txtItemTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGray2))
+            holder.txtItemSubTitle.setTextColor(ContextCompat.getColor(mContext, R.color.colorGray2))
         }
 
         if (areaList[position].polygon.isVisible) {
-            holder.imgItem.setImageDrawable(mContext.resources.getDrawable(R.mipmap.ic_visibility))
+            holder.imgItem.setImageDrawable(ContextCompat.getDrawable(mContext, R.mipmap.ic_visibility))
         } else {
-            holder.imgItem.setImageDrawable(mContext.resources.getDrawable(R.mipmap.ic_visibility_off))
+            holder.imgItem.setImageDrawable(ContextCompat.getDrawable(mContext, R.mipmap.ic_visibility_off))
         }
 
         holder.txtItemTitle.text = areaList[position].title
@@ -61,7 +62,6 @@ class RecyclerAreaAdapter(private val areaList: ArrayList<AreaModel>) : Recycler
     class OnImageClickListener(holder: ViewHolder, polygon: Polygon, marker: Marker) : View.OnClickListener {
 
         private val h = holder
-        private val r = h.imgItem.resources
         private val p = polygon
         private val m = marker
 
@@ -69,12 +69,12 @@ class RecyclerAreaAdapter(private val areaList: ArrayList<AreaModel>) : Recycler
             if (v == h.imgItem) {
                 if (h.imgItem.scaleType == ImageView.ScaleType.CENTER_INSIDE) {
                     h.imgItem.scaleType = ImageView.ScaleType.FIT_CENTER
-                    h.imgItem.setImageDrawable(r.getDrawable(R.mipmap.ic_visibility_off))
+                    h.imgItem.setImageDrawable(ContextCompat.getDrawable(v.context, R.mipmap.ic_visibility_off))
                     p.isVisible = false
                     m.isVisible = false
                 } else {
                     h.imgItem.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                    h.imgItem.setImageDrawable(r.getDrawable(R.mipmap.ic_visibility))
+                    h.imgItem.setImageDrawable(ContextCompat.getDrawable(v.context, R.mipmap.ic_visibility))
                     p.isVisible = true
                     m.isVisible = true
                 }

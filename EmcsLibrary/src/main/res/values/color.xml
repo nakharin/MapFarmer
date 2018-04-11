@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#DA4336</color>
+    <color name="colorPrimaryDark">#C62828</color>
+    <color name="colorAccent">#DA4336</color>
+    <color name="colorPrimaryLight">#FFCDD2</color>
+
+    <color name="colorText">#FFFFFF</color>
+    <color name="colorPrimaryText">#212121</color>
+    <color name="colorSecondaryText">#323232</color>
+    <color name="colorDivider">#B6B6B6</color>
+
+    <color name="colorBlack">#000000</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorRed">#EF5350</color>
+    <color name="colorBlue">#3F51B5</color>
+    <color name="colorGreen">#4BAE1F</color>
+    <color name="colorRequire">#C62828</color>
+    <color name="colorEmpty">#8989</color>
+    <color name="colorGrayLV1">#333</color>
+    <color name="colorGrayLV2">#666666</color>
+    <color name="colorGrayLV3">#999</color>
+    <color name="colorGrayLV5">#FFDEDEDE</color>
+    <color name="colorGrayLV6">#FAFAFA</color>
+    <color name="colorBackgroundMap">#F0EDE5</color>
+    <color name="colorTransparent">#80000000</color>
+    <color name="colorTransparentSelectorLV1">#00FFFFFF</color>
+    <color name="colorTransparentSelectorLV2">#78FFFFFF</color>
+    <color name="colorTransparentSelectorLV3">#78717171</color>
+    <color name="colorTransparentSelectorLV4">#78000000</color>
+    <color name="colorTransparentWhite">#A0FFFFFF</color>
+
+    <color name="search_layover_bg">#10000000</color>
+</resources>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/search_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Activity.SearchActivity">
+
+    <RelativeLayout
+        android:id="@+id/search_top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@android:color/white">
+
+        <EditText
+            android:id="@+id/edt_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:hint="@string/search_hint"
+            android:imeOptions="actionSearch"
+            android:inputType="textNoSuggestions"
+            android:lines="1"
+            android:paddingLeft="@dimen/search_view_text_padding"
+            android:paddingRight="@dimen/search_view_text_padding"
+            android:textColor="#212121"
+            android:textColorHint="#727272"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/img_action_up"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/search_icon_padding"
+            android:paddingRight="@dimen/search_icon_padding"
+            android:src="@drawable/ic_action_navigation_arrow_back" />
+
+        <ImageView
+            android:id="@+id/img_action_voice"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:paddingLeft="@dimen/search_icon_padding"
+            android:paddingRight="@dimen/search_icon_padding"
+            android:src="@drawable/ic_action_voice_search"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/img_action_qr_code"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:paddingLeft="@dimen/search_icon_padding"
+            android:paddingRight="@dimen/search_icon_padding"
+            android:src="@drawable/ic_action_qr_code" />
+
+        <ImageView
+            android:id="@+id/img_action_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:paddingLeft="@dimen/search_icon_padding"
+            android:paddingRight="@dimen/search_icon_padding"
+            android:src="@drawable/ic_action_navigation_close"
+            android:visibility="gone" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#10000000" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/list_suggestion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:divider="@android:color/transparent" />
+
+</LinearLayout>

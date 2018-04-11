@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/step_bar_view_frame_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/step_bar_view_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="6dp">
+
+            <LinearLayout
+                android:id="@+id/step_bar_view_linear_layout_1"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/dimen_32_dp"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:id="@+id/step_bar_view_frame_layout_1"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/shape_step_bar_normal">
+
+                    <ImageView
+                        android:id="@+id/step_bar_view_image_view_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:scaleType="centerInside"
+                        android:tint="@color/colorGrayLV2"
+                        app:srcCompat="@drawable/vector_directions_car" />
+
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/step_bar_view_text_view_desc_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:gravity="center"
+                    android:text="Car"
+                    android:textColor="@color/colorGrayLV2"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/step_bar_view_view_1"
+                android:layout_width="match_parent"
+                android:layout_height="1.2dp"
+                android:layout_marginTop="22dp"
+                android:layout_toEndOf="@+id/step_bar_view_linear_layout_1"
+                android:layout_toStartOf="@+id/step_bar_view_linear_layout_2"
+                android:background="@color/colorGrayLV2" />
+
+            <LinearLayout
+                android:id="@+id/step_bar_view_linear_layout_2"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:id="@+id/step_bar_view_frame_layout_2"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/shape_step_bar_normal">
+
+                    <ImageView
+                        android:id="@+id/step_bar_view_image_view_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:scaleType="centerInside"
+                        android:tint="@color/colorGrayLV2"
+                        app:srcCompat="@drawable/vector_person" />
+
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/step_bar_view_text_view_desc_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:gravity="center"
+                    android:text="Visitor"
+                    android:textColor="@color/colorGrayLV2"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/step_bar_view_view_2"
+                android:layout_width="match_parent"
+                android:layout_height="1.2dp"
+                android:layout_marginTop="22dp"
+                android:layout_toEndOf="@+id/step_bar_view_linear_layout_2"
+                android:layout_toStartOf="@+id/step_bar_view_linear_layout_3"
+                android:background="@color/colorGrayLV2" />
+
+            <LinearLayout
+                android:id="@+id/step_bar_view_linear_layout_3"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/dimen_32_dp"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:id="@+id/step_bar_view_frame_layout_3"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/shape_step_bar_normal">
+
+                    <ImageView
+                        android:id="@+id/step_bar_view_image_view_3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:scaleType="centerInside"
+                        android:tint="@color/colorGrayLV2"
+                        app:srcCompat="@drawable/vector_send" />
+
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/step_bar_view_text_view_desc_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:gravity="center"
+                    android:text="Review"
+                    android:textColor="@color/colorGrayLV2"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimary" />
+
+    </LinearLayout>
+
+</FrameLayout>

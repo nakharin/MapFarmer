@@ -13,7 +13,7 @@ class LoadingDialog(context: Context, msg: String) {
 
     init {
         val view = LayoutInflater.from(context).inflate(
-                R.layout.loading_dialog_view, null)
+                R.layout.dialog_loading, null)
         val layout = view.findViewById(R.id.dialog_view) as LinearLayout
         mLoadingView = view.findViewById(R.id.lv_circularring) as LVCircularRing
         val loadingText = view.findViewById(R.id.loading_text) as TextView

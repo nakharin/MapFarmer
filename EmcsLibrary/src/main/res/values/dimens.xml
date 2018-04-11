@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Project Dimen -->
+    <dimen name="dimen_16_dp">16dp</dimen>
+    <dimen name="dimen_32_dp">32dp</dimen>
+    <dimen name="dimen_8_dp">8dp</dimen>
+
+    <!-- Text Size -->
+    <dimen name="text_small">12sp</dimen>
+    <dimen name="text_medium">18sp</dimen>
+    <dimen name="text_large">22sp</dimen>
+    <dimen name="text_xlarge">30sp</dimen>
+
+    <!-- SelectView Dimen -->
+    <dimen name="shape_select_width">1dp</dimen>
+    <dimen name="shape_select_big_width">1.2dp</dimen>
+    <dimen name="shape_select_radius">4dp</dimen>
+    <dimen name="shape_select_padding">0dp</dimen>
+    <dimen name="shape_select_image_padding">10dp</dimen>
+
+    <!-- SpinnerView Dimen -->
+    <dimen name="shape_spinner_radius">4dp</dimen>
+    <dimen name="shape_spinner_padding">8dp</dimen>
+    <dimen name="shape_spinner_width">1dp</dimen>
+    <dimen name="shape_spinner_big_width">1.2dp</dimen>
+    <dimen name="size_14_sp">14sp</dimen>
+
+    <!-- EditTextView Dimen -->
+    <dimen name="shape_edit_width">1dp</dimen>
+    <dimen name="shape_edit_big_width">1.2dp</dimen>
+    <dimen name="shape_edit_radius">4dp</dimen>
+    <dimen name="shape_edit_padding">6dp</dimen>
+
+    <!-- ButtonView Dimen -->
+    <dimen name="btn_radius">5dp</dimen>
+    <dimen name="btn_padding">5dp</dimen>
+
+    <!-- Step Bar Dimen -->
+    <dimen name="shape_step_bar_radius">4dp</dimen>
+    <dimen name="step_bar_size">80dp</dimen>
+
+    <!-- SignatureView Dimen -->
+    <dimen name="shape_sign_width">1dp</dimen>
+    <dimen name="shape_sign_big_width">1.2dp</dimen>
+    <dimen name="shape_sign_radius">4dp</dimen>
+    <dimen name="shape_sign_padding">0dp</dimen>
+    <dimen name="shape_sign_image_padding">10dp</dimen>
+
+    <dimen name="search_icon_padding">12dp</dimen>
+    <dimen name="search_view_text_padding">65dp</dimen>
+
+</resources>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/spinner_view_frame_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/spinner_view_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/spinner_view_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/spinner_view_txt_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="@dimen/dimen_8_dp"
+                android:freezesText="true"
+                android:text="Title Name"
+                android:textColor="@color/colorPrimaryText"
+                android:textSize="@dimen/text_medium" />
+
+            <ImageView
+                android:id="@+id/spinner_view_img_require"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="2dp"
+                android:layout_toEndOf="@+id/spinner_view_txt_title"
+                app:srcCompat="@drawable/vector_required_field" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/spinner_view_relative_layout_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_spinner_normal"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/spinner_view_spn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:spinnerMode="dropdown" />
+
+            <ImageView
+                android:id="@+id/spinner_view_img_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/vector_arrow_normal_drop_down" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/spinner_view_txt_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:freezesText="true"
+            android:gravity="right"
+            android:maxLines="3"
+            android:minLines="1"
+            android:text="error"
+            android:textColor="@color/colorRed"
+            android:textSize="@dimen/size_14_sp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</FrameLayout>

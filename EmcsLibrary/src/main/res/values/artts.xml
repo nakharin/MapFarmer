@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="LoadingView">
+        <attr name="em_bg_color" format="color" />
+        <attr name="em_is_bg_map" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="SelectView">
+        <attr name="em_sv_disable" format="boolean" />
+        <attr name="em_txt_left" format="string" />
+        <attr name="em_txt_color_left" format="color" />
+        <attr name="em_txt_center" format="string" />
+        <attr name="em_txt_color_center" format="color" />
+        <attr name="em_txt_right" format="string" />
+        <attr name="em_txt_color_right" format="color" />
+        <attr name="em_sv_mode" format="enum">
+            <enum name="text" value="1" />
+            <enum name="image" value="2" />
+        </attr>
+        <attr name="em_sv_column" format="enum">
+            <enum name="two" value="1" />
+            <enum name="three" value="2" />
+        </attr>
+        <attr name="em_sv_src_left" format="integer" />
+        <attr name="em_sv_src_center" format="integer" />
+        <attr name="em_sv_src_right" format="integer" />
+        <attr name="em_sv_txt_below_left" format="string" />
+        <attr name="em_sv_txt_below_center" format="string" />
+        <attr name="em_sv_txt_below_right" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="SpinnerView">
+        <attr name="em_spn_title" format="string" />
+        <attr name="em_spn_require_field" format="boolean" />
+        <attr name="em_spn_disable" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="EditTextView">
+        <attr name="em_txt_title" format="string" />
+        <attr name="em_txt_text" format="string" />
+        <attr name="em_txt_hint" format="string" />
+        <attr name="em_txt_helper" format="string" />
+        <attr name="em_edt_min_height" format="integer" />
+        <attr name="em_disable" format="boolean" />
+        <attr name="em_require_field" format="boolean" />
+        <attr name="em_max_length" format="integer" />
+        <attr name="em_input_type" format="enum">
+            <enum name="text" value="1" />
+            <enum name="text_multi_line" value="2" />
+            <enum name="text_password" value="3" />
+            <enum name="number" value="4" />
+            <enum name="number_password" value="5" />
+            <enum name="userContactTel" value="6" />
+            <enum name="telephone" value="7" />
+            <enum name="text_policy" value="8" />
+            <enum name="date_time" value="9" />
+            <enum name="text_email" value="10" />
+            <enum name="text_policy_std" value="11" />
+            <enum name="id_card" value="12" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="ButtonView">
+        <attr name="em_btn_text" format="string" />
+        <attr name="em_btn_color" format="color" />
+        <attr name="em_btn_background" format="integer" />
+        <attr name="em_btn_padding" format="dimension" />
+        <attr name="em_drawable_left" format="color|reference" />
+        <attr name="em_is_show_drawable" format="boolean" />
+        <attr name="em_txt_size" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="SignatureView">
+        <attr name="em_sign_title" format="string" />
+        <attr name="em_sign_require_field" format="boolean" />
+        <attr name="em_sign_disable" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="CameraView">
+        <attr name="em_camera_title" format="string" />
+        <attr name="em_camera_require_field" format="boolean" />
+        <attr name="em_camera_disable" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="MaterialSearchView">
+        <attr name="searchBackground" format="integer" />
+        <attr name="searchVoiceIcon" format="integer" />
+        <attr name="searchCloseIcon" format="integer" />
+        <attr name="searchBackIcon" format="integer" />
+        <attr name="searchSuggestionIcon" format="integer" />
+        <attr name="searchSuggestionBackground" format="integer" />
+        <attr name="android:hint" />
+        <attr name="android:textColor" />
+        <attr name="android:textColorHint" />
+        <attr name="android:inputType" />
+    </declare-styleable>
+
+</resources>
