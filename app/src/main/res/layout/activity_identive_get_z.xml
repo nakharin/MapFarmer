@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="@dimen/dimen_16_dp">
+
+    <TextView
+        android:id="@+id/txtSCardName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="Name"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal">
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btnConnect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:text="Connect"/>
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btnRead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:backgroundTint="@color/colorGreen"
+                android:text="Read"/>
+
+        </LinearLayout>
+
+        <com.emcsthai.emcslibrary.ViewGroup.EditTextView
+            android:id="@+id/edtResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:em_edt_min_height="500"
+            app:em_input_type="text_multi_line"
+            app:em_require_field="true"
+            app:em_txt_title="Result" />
+
+    </LinearLayout>
+
+
+</FrameLayout>

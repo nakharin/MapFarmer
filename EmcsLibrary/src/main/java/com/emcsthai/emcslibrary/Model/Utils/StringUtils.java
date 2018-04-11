@@ -1,9 +1,11 @@
 package com.emcsthai.emcslibrary.Model.Utils;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.inthecheesefactory.thecheeselibrary.manager.Contextor;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
@@ -77,5 +79,30 @@ public class StringUtils {
         }
 
         return linkedHashMap;
+    }
+
+    public String getUTF8FromAsciiBytes(byte[] ascii_bytes) {
+        String ascii = null;
+        try {
+            ascii = new String(ascii_bytes, "TIS620");
+        } catch (UnsupportedEncodingException e) {
+            Toast.makeText(mContext, "GetUTF8FromAsciiBytes", Toast.LENGTH_SHORT).show();
+        }
+        byte[] utf8 = null;
+        try {
+            assert ascii != null;
+            utf8 = ascii.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            Toast.makeText(mContext, "GetUTF8FromAsciiBytes", Toast.LENGTH_SHORT).show();
+        }
+        String result = null;
+        try {
+            assert utf8 != null;
+            result = new String(utf8, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            Toast.makeText(mContext, "GetUTF8FromAsciiBytes", Toast.LENGTH_SHORT).show();
+        }
+        assert result != null;
+        return result.substring(0, result.length() - 2);
     }
 }

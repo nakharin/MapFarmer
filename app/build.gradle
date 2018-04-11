@@ -35,6 +35,8 @@ dependencies {
     api project(':TheCheeseLibrary')
     api project(':EmcsLibrary')
 
+    implementation files('libs/androidSCardV1.2.jar')
+
     implementation "com.android.support:appcompat-v7:${supportAppCompatVersion}"
     implementation "com.android.support:design:${supportAppCompatVersion}"
     implementation "com.google.android.gms:play-services-maps:${googlePlayServiceVersion}"
