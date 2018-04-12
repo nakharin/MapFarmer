@@ -39,7 +39,7 @@ import com.google.android.gms.maps.model.*
 import com.nakharin.mapfarmer.Adapter.RecyclerAreaAdapter
 import com.nakharin.mapfarmer.Controller.Fragment.DialogEditorPolygon
 import com.nakharin.mapfarmer.Event.RecyclerItemClickListener
-import com.nakharin.mapfarmer.Model.AreaModel
+import com.nakharin.mapfarmer.Model.Area
 import com.nakharin.mapfarmer.R
 import com.nakharin.mapfarmer.Utils.AnimationUtility
 import com.nakharin.mapfarmer.Utils.MapUtility
@@ -79,7 +79,7 @@ class MapsActivity : AppCompatActivity() {
     private lateinit var fabDone: FloatingActionButton
 
     private lateinit var arrCircle: ArrayList<Circle>
-    private lateinit var arrAreaModel: ArrayList<AreaModel>
+    private lateinit var arrArea: ArrayList<Area>
 
     private var numberMarker: Int = 1
     private var isNavigationShow: Boolean = false
@@ -144,9 +144,9 @@ class MapsActivity : AppCompatActivity() {
         fabDone = findViewById(R.id.fabDone)
 
         arrCircle = ArrayList()
-        arrAreaModel = ArrayList()
+        arrArea = ArrayList()
 
-        recyclerArea.adapter = RecyclerAreaAdapter(arrAreaModel)
+        recyclerArea.adapter = RecyclerAreaAdapter(arrArea)
     }
 
     private fun checkPermissionLocation() {
@@ -321,7 +321,7 @@ class MapsActivity : AppCompatActivity() {
 
     private val onItemClickListener: RecyclerItemClickListener.OnClickListener = object : RecyclerItemClickListener.OnClickListener {
         override fun onItemClick(position: Int, view: View) {
-            val centerLatLng = MapUtility().getPolygonCenterPoint(arrAreaModel[position].polygon.points)
+            val centerLatLng = MapUtility().getPolygonCenterPoint(arrArea[position].polygon.points)
             val zoomLevel = map.cameraPosition.zoom
             if (zoomLevel.toInt() > 16) {
                 map.animateCamera(CameraUpdateFactory.newLatLng(centerLatLng))
@@ -329,12 +329,12 @@ class MapsActivity : AppCompatActivity() {
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(centerLatLng, 16f))
             }
 
-            arrAreaModel[position].marker.showInfoWindow()
+            arrArea[position].marker.showInfoWindow()
 
             if (positionRemove != -1) {
-                arrAreaModel[positionRemove].state = false
+                arrArea[positionRemove].state = false
             }
-            arrAreaModel[position].state = true
+            arrArea[position].state = true
             positionRemove = position
             recyclerArea.adapter.notifyDataSetChanged()
         }
@@ -362,9 +362,9 @@ class MapsActivity : AppCompatActivity() {
 
         if (it == imgRemoveArea) {
             if (positionRemove != -1) {
-                arrAreaModel[positionRemove].polygon.remove()
-                arrAreaModel[positionRemove].marker.remove()
-                arrAreaModel.removeAt(positionRemove)
+                arrArea[positionRemove].polygon.remove()
+                arrArea[positionRemove].marker.remove()
+                arrArea.removeAt(positionRemove)
                 recyclerArea.adapter.notifyDataSetChanged()
                 positionRemove = -1
             }
@@ -373,11 +373,11 @@ class MapsActivity : AppCompatActivity() {
         if (it == imgEditArea) {
             if (positionRemove != -1) {
                 DialogEditorPolygon.Builder(supportFragmentManager)
-                        .setTitle(arrAreaModel[positionRemove].title)
+                        .setTitle(arrArea[positionRemove].title)
                         .setCancelable(false)
                         .setOnDialogListener(object : DialogEditorPolygon.OnDialogListener {
                             override fun onPositiveClick(s: String, d: Dialog) {
-                                arrAreaModel[positionRemove].title = s
+                                arrArea[positionRemove].title = s
                                 recyclerArea.adapter.notifyDataSetChanged()
                                 d.dismiss()
                             }
@@ -450,8 +450,8 @@ class MapsActivity : AppCompatActivity() {
                     val marker = map.addMarker(markerOptions)
                     marker.tag = numberMarker
 
-                    val areaModel = AreaModel(numberMarker, title, areaThaiFormat, polygon, marker, false)
-                    arrAreaModel.add(areaModel)
+                    val areaModel = Area(numberMarker, title, areaThaiFormat, polygon, marker, false)
+                    arrArea.add(areaModel)
 
                     recyclerArea.adapter.notifyDataSetChanged()
 
@@ -486,12 +486,12 @@ class MapsActivity : AppCompatActivity() {
 
     private val onMarkerClickListener: GoogleMap.OnMarkerClickListener = GoogleMap.OnMarkerClickListener {
 
-        val position = arrAreaModel.getPositionFromTag(it.tag as Int)
+        val position = arrArea.getPositionFromTag(it.tag as Int)
         if (positionRemove != -1) {
-            arrAreaModel[positionRemove].state = false
+            arrArea[positionRemove].state = false
         }
 
-        arrAreaModel[position].state = true
+        arrArea[position].state = true
         positionRemove = position
         recyclerArea.adapter.notifyDataSetChanged()
 
@@ -503,7 +503,7 @@ class MapsActivity : AppCompatActivity() {
  ****************************** Extension *************************************************
  ******************************************************************************************/
 
-fun ArrayList<AreaModel>.getPositionFromTag(tag: Int) : Int {
+fun ArrayList<Area>.getPositionFromTag(tag: Int) : Int {
     for (i in this.indices) {
         if (this[i].tag == tag) {
             return i

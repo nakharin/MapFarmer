@@ -11,10 +11,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.Polygon
-import com.nakharin.mapfarmer.Model.AreaModel
+import com.nakharin.mapfarmer.Model.Area
 import com.nakharin.mapfarmer.R
 
-class RecyclerAreaAdapter(private val areaList: ArrayList<AreaModel>) : RecyclerView.Adapter<RecyclerAreaAdapter.ViewHolder>() {
+class RecyclerAreaAdapter(private val areaList: ArrayList<Area>) : RecyclerView.Adapter<RecyclerAreaAdapter.ViewHolder>() {
 
     private lateinit var mContext: Context
 

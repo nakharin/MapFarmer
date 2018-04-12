@@ -13,6 +13,7 @@ import co.metalab.asyncawait.async
 import com.emcsthai.emcslibrary.Model.Utils.StringUtils
 import com.emcsthai.emcslibrary.ViewGroup.EditTextView
 import com.identive.libs.SCard
+import com.nakharin.mapfarmer.Model.Personal
 import com.nakharin.mapfarmer.R
 import com.nakharin.mapfarmer.Utils.SCardUtility
 import com.zqg.kotlin.LoadingDialog
@@ -41,7 +42,7 @@ class IdentiveGetZActivity : AppCompatActivity() {
 
     private lateinit var edtResult: EditTextView
 
-    private var resultCommand: String = ""
+    private lateinit var personal: Personal
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,38 +101,61 @@ class IdentiveGetZActivity : AppCompatActivity() {
 
         if (it == btnRead) {
 
-            resultCommand = ""
-
             val dialog = LoadingDialog(this, "Reading...")
             dialog.cancelable(false)
             dialog.show()
 
             async {
-                var byteResult = await { SCardUtility().transmitExtended(SELECT) }
-                resultCommand += "Result-SELECT : " + StringUtils.getInstance().getUTF8FromAsciiBytes(byteResult) + "\n"
 
-                byteResult = await { SCardUtility().transmitExtended(CID) }
-                resultCommand += "Result-CID : " + StringUtils.getInstance().getUTF8FromAsciiBytes(byteResult) + "\n"
+                personal = Personal()
 
-                byteResult = await { SCardUtility().transmitExtended(NAME_TH) }
-                resultCommand += "Result-NAME_TH : " + StringUtils.getInstance().getUTF8FromAsciiBytes(byteResult) + "\n"
+                await { SCardUtility().transmitExtended(SELECT) }
+                personal.citizenId = await { StringUtils.getInstance().getUTF8FromAsciiBytes(SCardUtility().transmitExtended(CID)) }
 
-                byteResult = await { SCardUtility().transmitExtended(NAME_EN) }
-                resultCommand += "Result-NAME_EN: " + StringUtils.getInstance().getUTF8FromAsciiBytes(byteResult) + "\n"
+                val nameTH = await { StringUtils.getInstance().getUTF8FromAsciiBytes(SCardUtility().transmitExtended(NAME_TH)) }
+                personal.setNameTH(nameTH)
 
-                byteResult = await { SCardUtility().transmitExtended(DATE_OF_BIRTH) }
-                resultCommand += "Result-DATE_OF_BIRTH: " + StringUtils.getInstance().getUTF8FromAsciiBytes(byteResult) + "\n"
+                val nameEN = await { StringUtils.getInstance().getUTF8FromAsciiBytes(SCardUtility().transmitExtended(NAME_EN)) }
+                personal.setNameEN(nameEN)
 
-                byteResult = await { SCardUtility().transmitExtended(GENDER) }
-                resultCommand += "Result-GENDER: " + StringUtils.getInstance().getUTF8FromAsciiBytes(byteResult) + "\n"
+                val gender = await { StringUtils.getInstance().getUTF8FromAsciiBytes(SCardUtility().transmitExtended(GENDER)) }
+                personal.setGender(gender)
 
-                byteResult = await { SCardUtility().transmitExtended(ADDRESS) }
-                resultCommand += "Result-ADDRESS: " + StringUtils.getInstance().getUTF8FromAsciiBytes(byteResult) + "\n"
+                val dateOfBirth = await { StringUtils.getInstance().getUTF8FromAsciiBytes(SCardUtility().transmitExtended(DATE_OF_BIRTH)) }
+                personal.setDateOfBirth(dateOfBirth)
+
+                val address = await { StringUtils.getInstance().getUTF8FromAsciiBytes(SCardUtility().transmitExtended(ADDRESS)) }
+                personal.setAddress(address)
+
             }.finally {
 
                 Handler().postDelayed({
                     dialog.close()
-                    edtResult.setText(resultCommand)
+
+                    var result = "CitizenId : ${personal.citizenId}\n\n"
+
+                    result += "TitleTH : ${personal.nameTH.title}\n"
+                    result += "NameTH : ${personal.nameTH.name}\n"
+                    result += "LastTH : ${personal.nameTH.lastName}\n\n"
+
+                    result += "TitleEN : ${personal.nameEN.title}\n"
+                    result += "NameEN : ${personal.nameEN.name}\n"
+                    result += "LastEN : ${personal.nameEN.lastName}\n\n"
+
+                    result += "gender : ${personal.gender.nameTH}\n\n"
+
+                    result += "strDate :  ${personal.dateOfBirth.dateBE}\n\n"
+
+                    result += "houseNo : ${personal.address.houseNo}\n"
+                    result += "villageNo : ${personal.address.villageNo}\n"
+                    result += "lane : ${personal.address.lane}\n"
+                    result += "road : ${personal.address.road}\n"
+                    result += "district : ${personal.address.district}\n"
+                    result += "subDistrict : ${personal.address.subDistrict}\n"
+                    result += "province : ${personal.address.province}\n"
+                    result += "allAddress : ${personal.address.allAddress}\n\n"
+
+                    edtResult.setText(result)
                 }, 2000)
             }
         }
