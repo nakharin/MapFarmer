@@ -10,7 +10,6 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import co.metalab.asyncawait.async
-import com.emcsthai.emcslibrary.Model.Utils.StringUtils
 import com.emcsthai.emcslibrary.ViewGroup.EditTextView
 import com.identive.libs.SCard
 import com.nakharin.mapfarmer.Model.Personal
@@ -110,21 +109,21 @@ class IdentiveGetZActivity : AppCompatActivity() {
                 personal = Personal()
 
                 await { SCardUtility().transmitExtended(SELECT) }
-                personal.citizenId = await { StringUtils.getInstance().getUTF8FromAsciiBytes(SCardUtility().transmitExtended(CID)) }
+                personal.citizenId = await { SCardUtility().transmitExtended(CID) }
 
-                val nameTH = await { StringUtils.getInstance().getUTF8FromAsciiBytes(SCardUtility().transmitExtended(NAME_TH)) }
+                val nameTH = await { SCardUtility().transmitExtended(NAME_TH) }
                 personal.setNameTH(nameTH)
 
-                val nameEN = await { StringUtils.getInstance().getUTF8FromAsciiBytes(SCardUtility().transmitExtended(NAME_EN)) }
+                val nameEN = await { SCardUtility().transmitExtended(NAME_EN) }
                 personal.setNameEN(nameEN)
 
-                val gender = await { StringUtils.getInstance().getUTF8FromAsciiBytes(SCardUtility().transmitExtended(GENDER)) }
+                val gender = await { SCardUtility().transmitExtended(GENDER) }
                 personal.setGender(gender)
 
-                val dateOfBirth = await { StringUtils.getInstance().getUTF8FromAsciiBytes(SCardUtility().transmitExtended(DATE_OF_BIRTH)) }
+                val dateOfBirth = await { SCardUtility().transmitExtended(DATE_OF_BIRTH) }
                 personal.setDateOfBirth(dateOfBirth)
 
-                val address = await { StringUtils.getInstance().getUTF8FromAsciiBytes(SCardUtility().transmitExtended(ADDRESS)) }
+                val address = await { SCardUtility().transmitExtended(ADDRESS) }
                 personal.setAddress(address)
 
             }.finally {
