@@ -100,6 +100,6 @@ class Personal {
         this.address.subDistrict = arrTemp[6]
         this.address.province = arrTemp[7]
 
-        this.address.allAddress = address
+        this.address.allAddress = address.replace("#", " ")
     }
 }
